@@ -14,6 +14,30 @@ datasource db {
 }
 
 model shortenedUrl {
-  slug String @unique @default(nanoid(7))
-  redirect String
+  slug      String              @id @default(nanoid(7))
+  redirect  String
+
+  stats     shortenedUrlStats?
+  visitors  shortenedUrlVisitor[]
+}
+
+model shortenedUrlStats {
+  id           Int       @id @default(autoincrement())
+  slug         String    @unique
+  clicks       Int       @default(0)
+  uniqueClicks Int       @default(0)
+  lastClickAt  DateTime?
+
+  url shortenedUrl @relation(fields: [slug], references: [slug])
+}
+
+model shortenedUrlVisitor {
+  id         Int      @id @default(autoincrement())
+  slug       String
+  visitorId  String 
+  firstSeenAt DateTime @default(now())
+
+  url shortenedUrl @relation(fields: [slug], references: [slug])
+
+  @@unique([slug, visitorId])
 }
