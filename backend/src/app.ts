@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import { generateOpenAPIDocument } from "./lib/swagger";
 import { pingRouter } from "./routes/ping.routes";
 import { shortenRouter } from "./routes/shorten.routes";
+import { authRouter } from "./routes/auth.routes";
 import { errorHandler } from "./middlewares/errorHandler";
 
 export const createApp = (): Application => {
@@ -15,6 +16,7 @@ export const createApp = (): Application => {
   app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok" });
   });
+  app.use("/auth", authRouter);
   app.use("/ping", pingRouter);
 
   app.use("/shorten", shortenRouter);
