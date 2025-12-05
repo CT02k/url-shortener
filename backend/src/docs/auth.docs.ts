@@ -37,9 +37,6 @@ export const registerAuthDocs = () => {
       409: {
         description: "Username already exists",
       },
-      501: {
-        description: "Not implemented",
-      },
     },
   });
 
@@ -71,9 +68,6 @@ export const registerAuthDocs = () => {
       },
       401: {
         description: "Invalid credentials",
-      },
-      501: {
-        description: "Not implemented",
       },
     },
   });

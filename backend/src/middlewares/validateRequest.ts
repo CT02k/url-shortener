@@ -20,7 +20,11 @@ export const validateRequest =
       }
 
       if (schema.query) {
-        req.query = schema.query.parse(req.query);
+        const parsedQuery = schema.query.parse(req.query);
+        Object.keys(req.query as Record<string, unknown>).forEach((key) => {
+          delete (req.query as Record<string, unknown>)[key];
+        });
+        Object.assign(req.query as Record<string, unknown>, parsedQuery);
       }
 
       next();

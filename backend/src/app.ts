@@ -5,18 +5,22 @@ import { generateOpenAPIDocument } from "./lib/swagger";
 import { pingRouter } from "./routes/ping.routes";
 import { shortenRouter } from "./routes/shorten.routes";
 import { authRouter } from "./routes/auth.routes";
+import { accountRouter } from "./routes/account.routes";
 import { errorHandler } from "./middlewares/errorHandler";
+import { responses } from "./middlewares/responses";
 
 export const createApp = (): Application => {
   const app = express();
 
   app.use(cors());
   app.use(express.json());
+  app.use(responses);
 
   app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok" });
   });
   app.use("/auth", authRouter);
+  app.use("/me", accountRouter);
   app.use("/ping", pingRouter);
 
   app.use("/shorten", shortenRouter);
