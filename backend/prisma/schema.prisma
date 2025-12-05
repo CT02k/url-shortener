@@ -30,7 +30,7 @@ model shortenedUrlStats {
   uniqueClicks Int       @default(0)
   lastClickAt  DateTime?
 
-  url shortenedUrl @relation(fields: [slug], references: [slug])
+  url shortenedUrl @relation(fields: [slug], references: [slug], onDelete: Cascade)
 }
 
 model shortenedUrlVisitor {

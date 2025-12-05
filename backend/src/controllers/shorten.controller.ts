@@ -15,7 +15,7 @@ export const getShorten: RequestHandler = async (req, res, next) => {
     });
 
     if (!data) {
-      return res.status(404).json({ message: "Not found" });
+      return res.notFound();
     }
 
     res.json(data);
@@ -33,7 +33,7 @@ export const redirectShorten: RequestHandler = async (req, res, next) => {
     });
 
     if (!data) {
-      return res.status(404).json({ message: "Not found" });
+      return res.notFound();
     }
 
     await prisma.shortenedUrlStats.upsert({
@@ -78,7 +78,7 @@ export const getShortenStats: RequestHandler = async (req, res, next) => {
     });
 
     if (!data) {
-      return res.status(404).json({ message: "Not found" });
+      return res.notFound();
     }
 
     res.json(data);
@@ -100,7 +100,7 @@ export const createShorten: RequestHandler = async (req, res, next) => {
         },
       });
 
-      if (!userData) return req.unauthorized();
+      if (!userData) return res.unauthorized();
 
       const data = await prisma.shortenedUrl.create({
         data: {

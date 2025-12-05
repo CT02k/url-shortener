@@ -11,7 +11,7 @@ export const requireAuth = (
   const authorization = req.headers.authorization;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    return req.unauthorized();
+    return res.unauthorized();
   }
 
   const token = authorization.replace("Bearer ", "");

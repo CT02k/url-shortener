@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { AccountLinksQuery } from "../validators/account.validator";
 import { ShortenParams } from "../validators/shorten.validator";
 import { prisma } from "../lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export const getProfile: RequestHandler = async (req, res, next) => {
   try {
@@ -24,7 +25,7 @@ export const listMyLinks: RequestHandler = async (req, res, next) => {
 
     const user = req.user;
 
-    if (!user) return req.unauthorized();
+    if (!user) return res.unauthorized();
 
     const list = await prisma.shortenedUrl.findMany({
       where: {
@@ -52,11 +53,26 @@ export const listMyLinks: RequestHandler = async (req, res, next) => {
 export const deleteMyLink: RequestHandler = async (req, res, next) => {
   try {
     const { slug } = req.params as ShortenParams;
-    const _user = req.user;
+    const user = req.user;
 
-    res.status(501).json({
-      message: `Delete link ${slug} not implemented yet`,
-    });
+    if (!user) return res.unauthorized();
+
+    try {
+      await prisma.shortenedUrl.delete({
+        where: {
+          slug,
+        },
+      });
+
+      return res.status(204).json();
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        if (err.code === "P2025") {
+          return res.notFound();
+        }
+      }
+      next(err);
+    }
   } catch (err) {
     next(err);
   }
