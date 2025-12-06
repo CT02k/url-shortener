@@ -5,8 +5,9 @@ Small fullstack URL shortener: Express + Prisma (PostgreSQL) backend and Next.js
 ## How to run
 - **Backend**
   1. `cd backend && npm install`
-  2. Create `.env` with `DATABASE_URL="file:./prisma/dev.db"`, `JWT_SECRET="your_key"`, `PORT=3000`, and optional `DISCORD_WEBHOOK_URL`.
-  3. `npm run prisma:migrate` (creates `dev.db`) then `npm run dev`.
+  2. Create `.env` with `DATABASE_URL`, `JWT_SECRET`, `PORT=3000`, and optional `DISCORD_WEBHOOK_URL` for error alerts.
+  3. `npm run prisma:migrate` then `npm run dev`.
+   
 - **Frontend**
   1. `cd frontend && npm install`
   2. Create `.env` with `NEXT_PUBLIC_BACKEND_URL=http://localhost:3000` and `NEXT_PUBLIC_FRONTEND_URL=http://localhost:3001`.
