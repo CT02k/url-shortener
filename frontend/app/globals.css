@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+::selection {
+  @apply bg-[#ed9c5a]/10 text-[#ed9c5a];
+}
+
+html {
+  @apply text-white;
+}
