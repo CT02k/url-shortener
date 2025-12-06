@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Loader2, LogOut, PanelsTopLeft } from "lucide-react";
+import { Loader2, LogOut, Menu, PanelsTopLeft, X } from "lucide-react";
 import UrlShortener from "../lib/api";
 import getToken, { clearToken } from "../lib/getToken";
 
@@ -44,6 +44,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
   const pathname = usePathname();
   const [loadingSession, setLoadingSession] = useState(true);
   const [profile, setProfile] = useState<{ username?: string } | null>(null);
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -88,6 +89,11 @@ export default function DashboardShell({ children }: DashboardShellProps) {
     router.replace("/login");
   };
 
+  useEffect(() => {
+    const func = async () => setNavOpen(false);
+    func();
+  }, [pathname]);
+
   if (loadingSession) {
     return (
       <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center">
@@ -100,7 +106,25 @@ export default function DashboardShell({ children }: DashboardShellProps) {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white flex">
-      <aside className="w-64 bg-black/95 border-r border-zinc-900 flex flex-col justify-between px-4 py-6 relative overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setNavOpen((open) => !open)}
+        className="lg:hidden fixed left-4 top-4 z-30 flex items-center gap-2 rounded-full border border-zinc-900 bg-black/80 px-4 py-2 text-sm text-zinc-200 shadow-lg backdrop-blur"
+      >
+        {navOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+        Menu
+      </button>
+      <div
+        className={`fixed inset-0 z-20 bg-black/50 backdrop-blur-sm transition-opacity duration-200 lg:hidden ${
+          navOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setNavOpen(false)}
+      />
+      <aside
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-black/95 border-r border-zinc-900 flex flex-col justify-between px-4 py-6 overflow-hidden transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 ${
+          navOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
         <div className="relative">
           <nav className="space-y-1">
             {navItems.map((item) => (
@@ -135,9 +159,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           </button>
         </div>
       </aside>
-      <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-hidden lg:ml-0">
         <div className="relative">
-          <main className="px-10 py-8">{children}</main>
+          <main className="px-6 py-16 lg:px-10 lg:py-8">{children}</main>
         </div>
       </div>
     </div>
