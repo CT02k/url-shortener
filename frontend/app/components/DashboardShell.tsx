@@ -92,8 +92,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
     return (
       <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center">
         <div className="flex items-center gap-3 text-zinc-300">
-          <Loader2 className="size-5 animate-spin text-[#ed9c5a]" />
-          <span>Checando sessão...</span>
+          <Loader2 className="size-24 animate-spin text-[#ed9c5a]" />
         </div>
       </div>
     );
@@ -132,7 +131,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-zinc-900 text-sm text-zinc-200 hover:border-red-400 hover:text-red-100 transition"
           >
             <LogOut className="size-4" />
-            Sair
+            Logout
           </button>
         </div>
       </aside>
