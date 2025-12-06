@@ -8,7 +8,6 @@ import {
 } from "react";
 import UrlShortener from "@/app/lib/api";
 import getToken, { clearToken } from "@/app/lib/getToken";
-import { env } from "@/app/lib/config";
 
 export type LinkItem = {
   id?: string;
@@ -40,7 +39,6 @@ type DashboardState = {
   statsSlug: string | null;
   statsLoading: boolean;
   statsError?: string;
-  shortUrlFor: (slug: string) => string;
   handleCreate: (ev: FormEvent<HTMLFormElement>) => Promise<void>;
   handleDelete: (slug: string) => Promise<void>;
   handleStats: (slug: string) => Promise<void>;
@@ -116,9 +114,6 @@ function useDashboardState(): DashboardState {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const shortUrlFor = (slug: string) =>
-    new URL(slug, env.NEXT_PUBLIC_FRONTEND_URL).toString();
-
   const handleCreate = async (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     setCreating(true);
@@ -184,7 +179,6 @@ function useDashboardState(): DashboardState {
     statsSlug,
     statsLoading,
     statsError,
-    shortUrlFor,
     handleCreate,
     handleDelete,
     handleStats,
@@ -203,7 +197,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
 export default function useDashboardContext() {
   const ctx = useContext(DashboardContext);
   if (!ctx) {
-    throw new Error("useDashboardContext must be used inside DashboardProvider");
+    throw new Error(
+      "useDashboardContext must be used inside DashboardProvider",
+    );
   }
   return ctx;
 }

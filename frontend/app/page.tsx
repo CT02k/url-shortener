@@ -6,11 +6,14 @@ import getToken, { clearToken } from "./lib/getToken";
 import { env } from "./lib/config";
 import AuthButtons from "./components/AuthButtons";
 import Image from "next/image";
+import { Check, Copy } from "lucide-react";
 
 export default function Home() {
   const [token, setToken] = useState<string>();
   const [result, setResult] = useState<string>();
   const [error, setError] = useState<string>();
+
+  const [copied, setCopied] = useState<boolean>(false);
 
   const [creating, setCreating] = useState<boolean>(false);
 
@@ -51,6 +54,13 @@ export default function Home() {
     }
 
     setError(message ?? "Unknown error, try again later.");
+  }
+
+  function handleCopy(url: string) {
+    navigator.clipboard.writeText(url);
+
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
   }
 
   return (
@@ -97,11 +107,17 @@ export default function Home() {
           </div>
         )}
         {result && (
-          <div className="bg-[#ed9c5a]/15 border border-[#ed9c5a] p-1.5 text-sm rounded-lg mt-4">
+          <div className="bg-[#ed9c5a]/15 border border-[#ed9c5a] p-1.5 text-sm rounded-lg mt-4 flex gap-2 items-center">
             Successfully shorten the URL,{" "}
             <a className="text-[#ed9c5a] underline" href={result}>
               {result}
             </a>
+            <span
+              className="cursor-pointer hover:opacity-80 transition"
+              onClick={() => handleCopy(result)}
+            >
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+            </span>
           </div>
         )}
       </div>

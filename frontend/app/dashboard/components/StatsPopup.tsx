@@ -1,5 +1,6 @@
 import { Loader2, X } from "lucide-react";
 import useDashboardContext from "../hooks/useDashboard";
+import { shortUrlFor } from "@/app/lib/utils";
 
 export default function StatsPopup() {
   const {
@@ -9,7 +10,6 @@ export default function StatsPopup() {
     statsLoading,
     statsError,
     setStatsOpen,
-    shortUrlFor,
   } = useDashboardContext();
 
   if (!statsOpen) return null;

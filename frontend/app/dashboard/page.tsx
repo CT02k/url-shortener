@@ -13,6 +13,7 @@ import CreatePopup from "./components/CreatePopup";
 import StatsPopup from "./components/StatsPopup";
 import { DashboardProvider, useDashboardContext } from "./hooks/useDashboard";
 import { useState } from "react";
+import { shortUrlFor } from "../lib/utils";
 
 export default function DashboardHome() {
   return (
@@ -27,15 +28,8 @@ export default function DashboardHome() {
 function DashboardContent() {
   const [copied, setCopied] = useState<boolean>(false);
 
-  const {
-    links,
-    loading,
-    error,
-    shortUrlFor,
-    setCreateOpen,
-    handleDelete,
-    handleStats,
-  } = useDashboardContext();
+  const { links, loading, error, setCreateOpen, handleDelete, handleStats } =
+    useDashboardContext();
 
   function handleCopy(url: string) {
     navigator.clipboard.writeText(url);
