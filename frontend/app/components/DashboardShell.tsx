@@ -27,10 +27,10 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   return (
     <Link
       href={item.href}
-      className={`group flex items-center gap-3 px-3 py-2 rounded-xl border transition duration-150 ${
+      className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition duration-150 ${
         active
-          ? "bg-[#ed9c5a]/10 border-[#ed9c5a]/60 text-white"
-          : "border-transparent text-zinc-400 hover:text-white hover:border-zinc-800 hover:bg-white/5"
+          ? "bg-zinc-900 text-[#ed9c5a]"
+          : "text-zinc-400 hover:text-white hover:border-zinc-800 hover:bg-white/5"
       }`}
     >
       <Icon className="size-4" />
