@@ -1,15 +1,19 @@
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from "axios";
 import { env } from "./config";
+import { clearToken } from "./getToken";
 
 export interface UrlShortenerOptions {
   token?: string;
+  onUnauthorized?: () => void | Promise<void>;
 }
 
 export default class UrlShortener {
   token?: string;
+  onUnauthorized?: () => void;
 
-  constructor({ token }: UrlShortenerOptions) {
+  constructor({ token, onUnauthorized }: UrlShortenerOptions) {
     this.token = token;
+    this.onUnauthorized = onUnauthorized ?? clearToken;
   }
 
   setToken(token: string) {
@@ -45,7 +49,12 @@ export default class UrlShortener {
       return response.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      if (err.response) return err.response.data;
+      if (err.response) {
+        if (err.response.status === 401 && this.onUnauthorized) {
+          await this.onUnauthorized();
+        }
+        return err.response.data;
+      }
       return { message: "Internal error" };
     }
   }
@@ -65,6 +74,62 @@ export default class UrlShortener {
   getUrlStats(id: string) {
     return this.request({
       path: `/shorten/${id}/stats`,
+    });
+  }
+
+  getShortUrl(slug: string) {
+    return this.request({
+      path: `/shorten/${slug}`,
+    });
+  }
+
+  registerAccount({ data }: { data: { username: string; password: string } }) {
+    return this.request({
+      path: `/auth/register`,
+      options: {
+        method: "POST",
+        data,
+      },
+    });
+  }
+
+  loginAccount({ data }: { data: { username: string; password: string } }) {
+    return this.request({
+      path: `/auth/login`,
+      options: {
+        method: "POST",
+        data,
+      },
+    });
+  }
+
+  getProfile() {
+    return this.request({
+      path: `/me`,
+    });
+  }
+
+  listMyLinks({
+    page,
+    limit,
+  }: {
+    page?: number;
+    limit?: number;
+  } = {}) {
+    return this.request({
+      path: `/me/links`,
+      options: {
+        params: { page, limit },
+      },
+    });
+  }
+
+  deleteMyLink(slug: string) {
+    return this.request({
+      path: `/me/links/${slug}`,
+      options: {
+        method: "DELETE",
+      },
     });
   }
 }

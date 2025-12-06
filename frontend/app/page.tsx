@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import UrlShortener from "./lib/api";
 import { FormEvent, useEffect, useState } from "react";
-import getToken from "./lib/getToken";
+import getToken, { clearToken } from "./lib/getToken";
 import { env } from "./lib/config";
+import AuthButtons from "./components/AuthButtons";
 
 export default function Home() {
   const [token, setToken] = useState<string>();
@@ -12,6 +12,10 @@ export default function Home() {
 
   const api = new UrlShortener({
     token,
+    onUnauthorized: async () => {
+      await clearToken();
+      setToken(undefined);
+    },
   });
 
   useEffect(() => {
@@ -40,6 +44,9 @@ export default function Home() {
   return (
     <main className="w-full h-screen bg-[#010101] flex flex-col items-center justify-center contain-content">
       <div className="absolute bg-[#ed9c5a]/10 size-128 rounded-full blur-[10rem] -bottom-1/6"></div>
+      <div className="flex w-full justify-end absolute top-0 p-8 gap-2">
+        <AuthButtons />
+      </div>
       <div className="flex flex-col items-center w-full z-10">
         <h1 className="text-6xl font-semibold bg-linear-to-t from-[#ed9c5a] to-white text-transparent bg-clip-text">
           Create short URLs
@@ -54,6 +61,7 @@ export default function Home() {
             id="redirect"
             className="rounded-lg bg-zinc-950/75 backdrop-blur-lg border border-zinc-900 w-full py-2 px-2 outline-none focus:border-[#ed9c5a]"
             placeholder="https://url.com"
+            required
           />
           <input
             type="submit"
