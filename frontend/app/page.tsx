@@ -5,6 +5,7 @@ import UrlShortener from "./lib/api";
 import getToken, { clearToken } from "./lib/getToken";
 import { env } from "./lib/config";
 import AuthButtons from "./components/AuthButtons";
+import Image from "next/image";
 
 export default function Home() {
   const [token, setToken] = useState<string>();
@@ -53,24 +54,33 @@ export default function Home() {
   }
 
   return (
-    <main className="w-full h-screen bg-[#010101] flex flex-col items-center justify-center contain-content">
-      <div className="absolute bg-[#ed9c5a]/10 size-128 rounded-full blur-[10rem] -bottom-1/6"></div>
+    <main className="w-full h-screen bg-[#010101] flex flex-col items-center justify-center contain-content graysc">
+      <div className="absolute bg-[#ed9c5a]/5 w-full h-256 rounded-full blur-[10rem] -bottom-2/3"></div>
       <div className="flex w-full justify-end absolute top-0 p-8 gap-2">
         <AuthButtons />
       </div>
       <div className="flex flex-col items-center w-full z-10">
-        <h1 className="text-6xl font-semibold bg-linear-to-t from-[#ed9c5a] to-white text-transparent bg-clip-text">
+        <div className="mb-4">
+          <Image
+            src="/icon.png"
+            alt="URL Shortener Icon"
+            width={128}
+            height={128}
+            className="size-16"
+          />
+        </div>
+        <h1 className="text-4xl md:text-6xl font-semibold text-[#ed9c5a] bg-clip-text">
           Create short URLs
         </h1>
-        <p className="text-2xl">
+        <p className="text-lg md:text-2xl px-4 text-center font-light mt-2">
           URL shortener allows to create a shortened link making it easy to
           share.
         </p>
-        <form className="flex w-1/4 mt-8" onSubmit={handleSubmit}>
+        <form className="flex md:w-1/4 mt-8" onSubmit={handleSubmit}>
           <input
             type="text"
             id="redirect"
-            className="rounded-lg bg-zinc-950/75 backdrop-blur-lg border border-zinc-900 w-full py-2 px-2 outline-none focus:border-[#ed9c5a]"
+            className="rounded-l-full bg-zinc-950/75 backdrop-blur-lg border border-zinc-900 w-full py-3 px-3 outline-none focus:border-[#ed9c5a]"
             placeholder="https://url.com"
             required
           />
@@ -78,7 +88,7 @@ export default function Home() {
             type="submit"
             value="Shorten"
             disabled={creating}
-            className="bg-[#ed9c5a] rounded-lg h-full px-4 ml-2 transition hover:opacity-90 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:animate-pulse"
+            className="bg-[#ed9c5a] rounded-r-full h-full px-6 transition hover:opacity-90 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:animate-pulse"
           />
         </form>
         {error && (
