@@ -8,7 +8,19 @@ export const getProfile: RequestHandler = async (req, res, next) => {
   try {
     const user = req.user;
 
-    res.status(200).json(user);
+    if (!user) return res.unauthorized();
+
+    const { id } = user;
+
+    const userData = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+      },
+    });
+
+    res.status(200).json(userData);
   } catch (err) {
     next(err);
   }
