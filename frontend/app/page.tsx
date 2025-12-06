@@ -11,6 +11,8 @@ export default function Home() {
   const [result, setResult] = useState<string>();
   const [error, setError] = useState<string>();
 
+  const [creating, setCreating] = useState<boolean>(false);
+
   const api = new UrlShortener({
     token,
     onUnauthorized: async () => {
@@ -30,6 +32,7 @@ export default function Home() {
 
   async function handleSubmit(ev: FormEvent<HTMLFormElement>) {
     ev.preventDefault();
+    setCreating(true);
     setError(undefined);
     setResult(undefined);
 
@@ -37,6 +40,8 @@ export default function Home() {
       ?.value;
 
     const { slug, message } = await api.createShortUrl(redirect);
+
+    setCreating(false);
 
     if (slug) {
       const url = new URL(slug, env.NEXT_PUBLIC_FRONTEND_URL).toString();
@@ -72,7 +77,8 @@ export default function Home() {
           <input
             type="submit"
             value="Shorten"
-            className="bg-[#ed9c5a] rounded-lg h-full px-4 ml-2 transition hover:opacity-90 cursor-pointer"
+            disabled={creating}
+            className="bg-[#ed9c5a] rounded-lg h-full px-4 ml-2 transition hover:opacity-90 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:animate-pulse"
           />
         </form>
         {error && (
