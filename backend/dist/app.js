@@ -10,14 +10,20 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_1 = require("./lib/swagger");
 const ping_routes_1 = require("./routes/ping.routes");
 const shorten_routes_1 = require("./routes/shorten.routes");
+const auth_routes_1 = require("./routes/auth.routes");
+const account_routes_1 = require("./routes/account.routes");
 const errorHandler_1 = require("./middlewares/errorHandler");
+const responses_1 = require("./middlewares/responses");
 const createApp = () => {
     const app = (0, express_1.default)();
     app.use((0, cors_1.default)());
     app.use(express_1.default.json());
+    app.use(responses_1.responses);
     app.get("/health", (_req, res) => {
         res.status(200).json({ status: "ok" });
     });
+    app.use("/auth", auth_routes_1.authRouter);
+    app.use("/me", account_routes_1.accountRouter);
     app.use("/ping", ping_routes_1.pingRouter);
     app.use("/shorten", shorten_routes_1.shortenRouter);
     const swaggerDocument = (0, swagger_1.generateOpenAPIDocument)();

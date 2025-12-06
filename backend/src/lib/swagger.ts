@@ -5,6 +5,13 @@ import {
 
 export const registry = new OpenAPIRegistry();
 
+// Register shared components (e.g. auth) so they are included in generated docs
+registry.registerComponent("securitySchemes", "bearerAuth", {
+  type: "http",
+  scheme: "bearer",
+  bearerFormat: "JWT",
+});
+
 export const generateOpenAPIDocument = () => {
   const generator = new OpenApiGeneratorV3(registry.definitions);
 
@@ -19,14 +26,10 @@ export const generateOpenAPIDocument = () => {
         url: "http://localhost:3000",
       },
     ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
+    security: [
+      {
+        bearerAuth: [],
       },
-    },
+    ],
   });
 };
