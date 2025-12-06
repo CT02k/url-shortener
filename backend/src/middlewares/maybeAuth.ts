@@ -12,7 +12,11 @@ export const maybeAuth = (req: Request, res: Response, next: NextFunction) => {
 
   if (!token) return next();
 
-  req.user = jwt.verify(token, env.JWT_SECRET) as any as AuthUser;
+  try {
+    req.user = jwt.verify(token, env.JWT_SECRET) as any as AuthUser;
+  } catch {
+    return res.unauthorized();
+  }
 
   next();
 };

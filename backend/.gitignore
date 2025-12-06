@@ -1,4 +1,5 @@
 node_modules
+dist
 prisma/dev.db
 src/generated/prisma
 .env

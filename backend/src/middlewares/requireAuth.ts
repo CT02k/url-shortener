@@ -18,7 +18,11 @@ export const requireAuth = (
 
   if (!token) next();
 
-  req.user = jwt.verify(token, env.JWT_SECRET) as any as AuthUser;
+  try {
+    req.user = jwt.verify(token, env.JWT_SECRET) as any as AuthUser;
+  } catch {
+    return res.unauthorized();
+  }
 
   next();
 };

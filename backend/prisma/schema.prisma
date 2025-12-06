@@ -19,7 +19,7 @@ model shortenedUrl {
 
   stats    shortenedUrlStats?
   visitors shortenedUrlVisitor[]
-  user     user?                 @relation(fields: [userId], references: [id])
+  user     user?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String?
 }
 
@@ -39,7 +39,7 @@ model shortenedUrlVisitor {
   visitorId   String
   firstSeenAt DateTime @default(now())
 
-  url shortenedUrl @relation(fields: [slug], references: [slug])
+  url shortenedUrl @relation(fields: [slug], references: [slug], onDelete: Cascade)
 
   @@unique([slug, visitorId])
 }
