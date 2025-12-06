@@ -59,6 +59,12 @@ export default function AuthButtons({ className = "" }: AuthButtonsProps) {
         >
           Logout
         </button>
+        <Link
+          href="/dashboard"
+          className="bg-[#ed9c5a] rounded-full px-6 py-2 transition hover:opacity-90 cursor-pointer"
+        >
+          Dashboard
+        </Link>
       </div>
     );
   }
