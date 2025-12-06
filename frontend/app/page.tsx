@@ -1,6 +1,7 @@
 "use client";
-import UrlShortener from "./lib/api";
+
 import { FormEvent, useEffect, useState } from "react";
+import UrlShortener from "./lib/api";
 import getToken, { clearToken } from "./lib/getToken";
 import { env } from "./lib/config";
 import AuthButtons from "./components/AuthButtons";
@@ -20,27 +21,32 @@ export default function Home() {
 
   useEffect(() => {
     async function getAndSetToken() {
-      const token = await getToken();
-      setToken(token);
+      const nextToken = await getToken();
+      setToken(nextToken);
     }
 
     getAndSetToken();
   }, []);
 
-  function handleSubmit(ev: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(ev: FormEvent<HTMLFormElement>) {
     ev.preventDefault();
+    setError(undefined);
+    setResult(undefined);
 
     const redirect = (document.getElementById("redirect") as HTMLInputElement)
       ?.value;
 
-    api.createShortUrl(redirect).then(({ slug, message }) => {
-      if (slug) {
-        const url = new URL(slug, env.NEXT_PUBLIC_FRONTEND_URL).toString();
-        return setResult(url);
-      }
-      setError(message ?? "Unknown error, try again later.");
-    });
+    const { slug, message } = await api.createShortUrl(redirect);
+
+    if (slug) {
+      const url = new URL(slug, env.NEXT_PUBLIC_FRONTEND_URL).toString();
+      setResult(url);
+      return;
+    }
+
+    setError(message ?? "Unknown error, try again later.");
   }
+
   return (
     <main className="w-full h-screen bg-[#010101] flex flex-col items-center justify-center contain-content">
       <div className="absolute bg-[#ed9c5a]/10 size-128 rounded-full blur-[10rem] -bottom-1/6"></div>
@@ -75,7 +81,7 @@ export default function Home() {
           </div>
         )}
         {result && (
-          <div className="bg-red-[#ed9c5a]/25 border border-[#ed9c5a] p-1.5 text-sm rounded-lg mt-4">
+          <div className="bg-[#ed9c5a]/15 border border-[#ed9c5a] p-1.5 text-sm rounded-lg mt-4">
             Successfully shorten the URL,{" "}
             <a className="text-[#ed9c5a] underline" href={result}>
               {result}

@@ -7,3 +7,7 @@
 html {
   @apply text-white;
 }
+
+body {
+  @apply bg-[#050505];
+}

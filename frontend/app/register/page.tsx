@@ -31,7 +31,7 @@ export default function RegisterPage() {
 
       const profile = await sessionApi.getProfile();
       if (profile?.id && !cancelled) {
-        router.replace("/");
+        router.replace("/dashboard");
       }
     }
 
@@ -59,7 +59,7 @@ export default function RegisterPage() {
     }
 
     await setToken(token);
-    router.push("/");
+    router.push("/dashboard");
   }
 
   return (
