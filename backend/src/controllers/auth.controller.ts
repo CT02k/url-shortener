@@ -8,7 +8,9 @@ import jwt from "jsonwebtoken";
 
 export const register: RequestHandler = async (req, res, next) => {
   try {
-    const { username, password } = req.body as RegisterBody;
+    const { password } = req.body as RegisterBody;
+
+    const username = req.body.username.toLowerCase();
 
     const hashed = await bcrypt.hash(password, 10);
 
@@ -39,7 +41,9 @@ export const register: RequestHandler = async (req, res, next) => {
 
 export const login: RequestHandler = async (req, res, next) => {
   try {
-    const { username, password } = req.body as LoginBody;
+    const { password } = req.body as LoginBody;
+
+    const username = req.body.username.toLowerCase();
 
     const user = await prisma.user.findUnique({
       where: { username },
