@@ -1,12 +1,18 @@
 "use client";
 
-import { BarChart3, Loader2, Plus, RefreshCw, Trash2 } from "lucide-react";
+import {
+  BarChart3,
+  Check,
+  Copy,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
 import CreatePopup from "./components/CreatePopup";
 import StatsPopup from "./components/StatsPopup";
-import {
-  DashboardProvider,
-  useDashboardContext,
-} from "./hooks/useDashboard";
+import { DashboardProvider, useDashboardContext } from "./hooks/useDashboard";
+import { useState } from "react";
 
 export default function DashboardHome() {
   return (
@@ -19,15 +25,24 @@ export default function DashboardHome() {
 }
 
 function DashboardContent() {
+  const [copied, setCopied] = useState<boolean>(false);
+
   const {
     links,
     loading,
     error,
-    setCreateOpen,
     shortUrlFor,
+    setCreateOpen,
     handleDelete,
     handleStats,
   } = useDashboardContext();
+
+  function handleCopy(url: string) {
+    navigator.clipboard.writeText(url);
+
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
 
   return (
     <div className="space-y-6">
@@ -85,40 +100,49 @@ function DashboardContent() {
                 </td>
               </tr>
             ) : (
-              links.map((link) => (
-                <tr
-                  key={link.slug}
-                  className="border-t border-zinc-900 hover:bg-white/5"
-                >
-                  <td className="px-4 py-3">
-                    <a
-                      href={shortUrlFor(link.slug)}
-                      className="text-[#ed9c5a] underline"
-                    >
-                      {link.slug}
-                    </a>
-                  </td>
-                  <td className="px-4 py-3 text-zinc-200">
-                    {link.redirect ?? link.target ?? "-"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleStats(link.slug)}
-                        className="flex items-center gap-1 rounded-lg border border-zinc-800 px-3 py-1.5 text-xs text-zinc-200 hover:border-zinc-700 bg-zinc-900 cursor-pointer"
+              links.map((link) => {
+                const url = shortUrlFor(link.slug);
+                return (
+                  <tr
+                    key={link.slug}
+                    className="border-t border-zinc-900 hover:bg-white/5"
+                  >
+                    <td className="px-4 py-3 flex items-center gap-2">
+                      <a
+                        href={url}
+                        className="text-[#ed9c5a] underline text-xs md:text-base"
                       >
-                        <BarChart3 className="size-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(link.slug)}
-                        className="flex items-center gap-1 rounded-lg border border-red-500/40 px-3 py-1.5 text-xs text-red-200 hover:border-red-400/70 bg-red-900 cursor-pointer"
+                        {url}
+                      </a>
+                      <span
+                        className="cursor-pointer hover:opacity-80 transition"
+                        onClick={() => handleCopy(url)}
                       >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                        {copied ? <Check size={16} /> : <Copy size={16} />}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-zinc-200 text-xs md:text-base">
+                      {link.redirect}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col md:flex-row gap-2">
+                        <button
+                          onClick={() => handleStats(link.slug)}
+                          className="flex items-center justify-center rounded-lg border border-zinc-800 px-3 py-1.5 text-xs text-zinc-200 hover:border-zinc-700 bg-zinc-900 cursor-pointer"
+                        >
+                          <BarChart3 className="size-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(link.slug)}
+                          className="flex items-center justify-center rounded-lg border border-red-500/40 px-3 py-1.5 text-xs text-red-200 hover:border-red-400/70 bg-red-900 cursor-pointer"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
