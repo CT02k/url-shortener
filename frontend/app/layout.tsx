@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { env } from "./lib/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
     title: "URL Shortener",
     description:
       "Small fullstack URL shortener: Express + Prisma (PostgreSQL) backend and Next.js frontend to create short links, track clicks, and handle auth/account.",
+    images: [`${new URL("/og.png", env.NEXT_PUBLIC_FRONTEND_URL)}`],
   },
 };
 
