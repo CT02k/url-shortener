@@ -10,7 +10,7 @@ export const register: RequestHandler = async (req, res, next) => {
   try {
     const { password } = req.body as RegisterBody;
 
-    const username = req.body.username.toLowerCase();
+    const username = (req.body as RegisterBody).username.toLowerCase();
 
     const hashed = await bcrypt.hash(password, 10);
 
@@ -43,7 +43,7 @@ export const login: RequestHandler = async (req, res, next) => {
   try {
     const { password } = req.body as LoginBody;
 
-    const username = req.body.username.toLowerCase();
+    const username = (req.body as LoginBody).username.toLowerCase();
 
     const user = await prisma.user.findUnique({
       where: { username },
