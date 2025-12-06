@@ -1,3 +1,5 @@
+<img width="768" height="432" alt="screenshot" src="https://github.com/user-attachments/assets/2614b869-0777-45f9-8baa-5d3079089482" />
+
 # URL Shortener
 
 Small fullstack URL shortener: Express + Prisma (PostgreSQL) backend and Next.js frontend to create short links, track clicks, and handle auth/account.
