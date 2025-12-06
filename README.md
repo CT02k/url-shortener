@@ -1,6 +1,6 @@
 # URL Shortener
 
-Small fullstack URL shortener: Express + Prisma (SQLite) backend and Next.js frontend to create short links, track clicks, and handle auth/account.
+Small fullstack URL shortener: Express + Prisma (PostgreSQL) backend and Next.js frontend to create short links, track clicks, and handle auth/account.
 
 ## How to run
 - **Backend**
