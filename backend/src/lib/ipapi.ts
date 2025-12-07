@@ -1,4 +1,5 @@
 import axios from "axios";
+import { env } from "./config";
 
 const PRIVATE_IP_REGEX =
   /^(127\.|10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|::1$|::1\/128$|::ffff:127\.|fc00:|fd00:|fe80:)/i;
@@ -15,12 +16,16 @@ export const lookupCountryByIp = async (
   | undefined
 > => {
   if (!ip) return undefined;
-  if (PRIVATE_IP_REGEX.test(ip)) return undefined;
+  if (env.NODE_ENV !== "development" && PRIVATE_IP_REGEX.test(ip))
+    return undefined;
 
   try {
-    const { data } = await axios.get(`${IPAPI_URL}/${encodeURIComponent(ip)}`, {
-      timeout: 2000,
-    });
+    const url =
+      env.NODE_ENV !== "development"
+        ? `${IPAPI_URL}/${encodeURIComponent(ip)}`
+        : IPAPI_URL;
+
+    const { data } = await axios.get(url, { timeout: 2000 });
 
     const country = data?.country_iso_code;
     const countryName = data?.country_name;

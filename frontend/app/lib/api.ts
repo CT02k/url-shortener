@@ -71,9 +71,19 @@ export default class UrlShortener {
     });
   }
 
-  getUrlStats(id: string) {
+  getUrlStats(
+    id: string,
+    query?: {
+      range?: "hour" | "day" | "week" | "month";
+      from?: string | Date;
+      to?: string | Date;
+    },
+  ) {
     return this.request({
       path: `/shorten/${id}/stats`,
+      options: {
+        params: query,
+      },
     });
   }
 

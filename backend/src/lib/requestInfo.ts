@@ -7,21 +7,20 @@ export const getClientIp = (req: Request): string | undefined => {
     typeof forwardedFor === "string"
       ? forwardedFor.split(",")[0]?.trim()
       : Array.isArray(forwardedFor)
-      ? forwardedFor[0]
-      : undefined;
+        ? forwardedFor[0]
+        : undefined;
 
   const ip = ipFromHeader || req.ip || undefined;
 
   if (!ip) return undefined;
 
-  // Remove IPv6 prefix used when IPv4 is forwarded through IPv6.
   return ip.replace(/^::ffff:/, "");
 };
 
 export const getReferrer = (req: Request): string | undefined => {
-  const referrer = req.get("referer") || req.get("referrer");
+  const referrer = req.params.ref;
 
-  return referrer || undefined;
+  return referrer || "Unknown";
 };
 
 export const getUserAgent = (req: Request): string | undefined => {
@@ -30,7 +29,9 @@ export const getUserAgent = (req: Request): string | undefined => {
   return ua || undefined;
 };
 
-export const getBrowserFromUserAgent = (userAgent?: string): string | undefined => {
+export const getBrowserFromUserAgent = (
+  userAgent?: string,
+): string | undefined => {
   if (!userAgent) return undefined;
 
   const ua = userAgent.toLowerCase();

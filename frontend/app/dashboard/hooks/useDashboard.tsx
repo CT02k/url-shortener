@@ -16,14 +16,6 @@ export type LinkItem = {
   target?: string;
 };
 
-export type Stats = {
-  id: string;
-  slug: string;
-  clicks: string;
-  uniqueClicks: string;
-  lastClickAt: string;
-};
-
 type DashboardState = {
   links: LinkItem[];
   loading: boolean;
@@ -33,15 +25,8 @@ type DashboardState = {
   createInput: string;
   setCreateInput: (value: string) => void;
   creating: boolean;
-  statsOpen: boolean;
-  setStatsOpen: (value: boolean) => void;
-  statsData: Stats | null;
-  statsSlug: string | null;
-  statsLoading: boolean;
-  statsError?: string;
   handleCreate: (ev: FormEvent<HTMLFormElement>) => Promise<void>;
   handleDelete: (slug: string) => Promise<void>;
-  handleStats: (slug: string) => Promise<void>;
 };
 
 const DashboardContext = createContext<DashboardState | null>(null);
@@ -55,12 +40,6 @@ function useDashboardState(): DashboardState {
   const [createOpen, setCreateOpen] = useState(false);
   const [createInput, setCreateInput] = useState("");
   const [creating, setCreating] = useState(false);
-
-  const [statsOpen, setStatsOpen] = useState(false);
-  const [statsData, setStatsData] = useState<Stats | null>(null);
-  const [statsSlug, setStatsSlug] = useState<string | null>(null);
-  const [statsLoading, setStatsLoading] = useState(false);
-  const [statsError, setStatsError] = useState<string | undefined>();
 
   const makeApi = (overrideToken?: string) =>
     new UrlShortener({
@@ -148,22 +127,6 @@ function useDashboardState(): DashboardState {
     }
   };
 
-  const handleStats = async (slug: string) => {
-    setStatsOpen(true);
-    setStatsSlug(slug);
-    setStatsLoading(true);
-    setStatsError(undefined);
-    setStatsData(null);
-
-    const res = await makeApi().getUrlStats(slug);
-    if (res?.message && !res.stats) {
-      setStatsError(res.message);
-    } else {
-      setStatsData(res);
-    }
-    setStatsLoading(false);
-  };
-
   return {
     links,
     loading,
@@ -173,15 +136,8 @@ function useDashboardState(): DashboardState {
     createInput,
     setCreateInput: (value: string) => setCreateInput(value),
     creating,
-    statsOpen,
-    setStatsOpen: (value: boolean) => setStatsOpen(value),
-    statsData,
-    statsSlug,
-    statsLoading,
-    statsError,
     handleCreate,
     handleDelete,
-    handleStats,
   };
 }
 

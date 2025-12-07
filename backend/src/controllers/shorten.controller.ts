@@ -117,7 +117,7 @@ export const redirectShorten: RequestHandler = async (req, res, next) => {
 
     const visitorId = await getVisitorId(req);
     const location = await lookupCountryByIp(ip);
-    const country = location?.countryName ?? location?.country ?? null;
+    const country = location?.country ?? null;
 
     try {
       await prisma.shortenedUrlVisitor.create({

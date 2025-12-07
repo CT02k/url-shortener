@@ -10,17 +10,16 @@ import {
   Trash2,
 } from "lucide-react";
 import CreatePopup from "./components/CreatePopup";
-import StatsPopup from "./components/StatsPopup";
 import { DashboardProvider, useDashboardContext } from "./hooks/useDashboard";
 import { useState } from "react";
 import { shortUrlFor } from "../lib/utils";
+import Link from "next/link";
 
 export default function DashboardHome() {
   return (
     <DashboardProvider>
       <DashboardContent />
       <CreatePopup />
-      <StatsPopup />
     </DashboardProvider>
   );
 }
@@ -28,7 +27,7 @@ export default function DashboardHome() {
 function DashboardContent() {
   const [copied, setCopied] = useState<boolean>(false);
 
-  const { links, loading, error, setCreateOpen, handleDelete, handleStats } =
+  const { links, loading, error, setCreateOpen, handleDelete } =
     useDashboardContext();
 
   function handleCopy(url: string) {
@@ -120,12 +119,12 @@ function DashboardContent() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-col md:flex-row gap-2">
-                        <button
-                          onClick={() => handleStats(link.slug)}
+                        <Link
+                          href={`/dashboard/stats/${link.slug}`}
                           className="flex items-center justify-center rounded-lg border border-zinc-800 px-3 py-1.5 text-xs text-zinc-200 hover:border-zinc-700 bg-zinc-900 cursor-pointer"
                         >
                           <BarChart3 className="size-4" />
-                        </button>
+                        </Link>
                         <button
                           onClick={() => handleDelete(link.slug)}
                           className="flex items-center justify-center rounded-lg border border-red-500/40 px-3 py-1.5 text-xs text-red-200 hover:border-red-400/70 bg-red-900 cursor-pointer"

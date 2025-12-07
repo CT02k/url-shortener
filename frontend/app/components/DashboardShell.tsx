@@ -161,7 +161,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
       </aside>
       <div className="flex-1 relative overflow-hidden lg:ml-0">
         <div className="relative">
-          <main className="px-6 py-16 lg:px-10 lg:py-8">{children}</main>
+          <main className="px-6 py-16 lg:px-10 lg:py-8 h-screen overflow-y-scroll">
+            {children}
+          </main>
         </div>
       </div>
     </div>
