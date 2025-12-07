@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Loader2, LogOut, Menu, PanelsTopLeft, X } from "lucide-react";
 import UrlShortener from "../lib/api";
 import getToken, { clearToken } from "../lib/getToken";
+import Image from "next/image";
 
 interface DashboardShellProps {
   children: ReactNode;
@@ -29,7 +30,7 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
       href={item.href}
       className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition duration-150 ${
         active
-          ? "bg-zinc-900 text-[#ed9c5a]"
+          ? "bg-[#ffebda]/10 text-[#ed9c5a]"
           : "text-zinc-400 hover:text-white hover:border-zinc-800 hover:bg-white/5"
       }`}
     >
@@ -126,6 +127,15 @@ export default function DashboardShell({ children }: DashboardShellProps) {
         }`}
       >
         <div className="relative">
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/logo.png"
+              alt="URL Shortener Logo"
+              className="w-48 h-auto"
+              width={256}
+              height={256}
+            />
+          </div>
           <nav className="space-y-1">
             {navItems.map((item) => (
               <NavLink
@@ -139,8 +149,8 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           </nav>
         </div>
         <div className="relative mt-8 border-t border-zinc-900 pt-6">
-          <div className="flex items-center gap-3 px-3 pb-3">
-            <div className="size-10 rounded-full bg-linear-to-br from-[#ed9c5a] to-amber-300 text-black font-semibold flex items-center justify-center">
+          <div className="flex items-center gap-3 pb-3">
+            <div className="size-10 rounded-full bg-[#ed9c5a] text-black font-semibold flex items-center justify-center">
               {(profile?.username?.[0] ?? "U").toUpperCase()}
             </div>
             <div className="leading-tight">
