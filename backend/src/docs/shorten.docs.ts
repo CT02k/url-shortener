@@ -2,8 +2,9 @@ import { registry } from "../lib/swagger";
 import {
   CreateShortenBodySchema,
   ShortenParamsSchema,
+  ShortenStatsQuerySchema,
   ShortenedUrlSchema,
-  ShortenedUrlStatsSchema,
+  ShortenStatsResponseSchema,
 } from "../validators/shorten.validator";
 
 export const registerShortenDocs = () => {
@@ -63,13 +64,14 @@ export const registerShortenDocs = () => {
     tags: ["Shortener"],
     request: {
       params: ShortenParamsSchema,
+      query: ShortenStatsQuerySchema,
     },
     responses: {
       200: {
         description: "URL Stats",
         content: {
           "application/json": {
-            schema: ShortenedUrlStatsSchema,
+            schema: ShortenStatsResponseSchema,
           },
         },
       },

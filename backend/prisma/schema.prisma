@@ -19,6 +19,7 @@ model shortenedUrl {
 
   stats    shortenedUrlStats?
   visitors shortenedUrlVisitor[]
+  clicks   shortenedUrlClick[]
   user     user?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String?
 }
@@ -42,6 +43,22 @@ model shortenedUrlVisitor {
   url shortenedUrl @relation(fields: [slug], references: [slug], onDelete: Cascade)
 
   @@unique([slug, visitorId])
+}
+
+model shortenedUrlClick {
+  id         Int      @id @default(autoincrement())
+  slug       String
+  visitorId  String?
+  referrer   String?
+  userAgent  String?
+  browser    String?
+  country    String?
+  clickedAt  DateTime @default(now())
+
+  url shortenedUrl @relation(fields: [slug], references: [slug], onDelete: Cascade)
+
+  @@index([slug, clickedAt])
+  @@index([slug, visitorId])
 }
 
 model user {

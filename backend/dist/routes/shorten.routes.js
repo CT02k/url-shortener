@@ -10,5 +10,5 @@ exports.shortenRouter = (0, express_1.Router)();
 (0, shorten_docs_1.registerShortenDocs)();
 exports.shortenRouter.get("/:slug", shorten_validator_1.shortenValidators.params, shorten_controller_1.getShorten);
 exports.shortenRouter.get("/:slug/redirect", shorten_validator_1.shortenValidators.params, shorten_controller_1.redirectShorten);
-exports.shortenRouter.get("/:slug/stats", shorten_validator_1.shortenValidators.params, shorten_controller_1.getShortenStats);
+exports.shortenRouter.get("/:slug/stats", shorten_validator_1.shortenValidators.params, shorten_validator_1.shortenValidators.statsQuery, shorten_controller_1.getShortenStats);
 exports.shortenRouter.post("/", maybeAuth_1.maybeAuth, shorten_validator_1.shortenValidators.createBody, shorten_controller_1.createShorten);

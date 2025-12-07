@@ -17,6 +17,11 @@ shortenRouter.get("/:slug", shortenValidators.params, getShorten);
 
 shortenRouter.get("/:slug/redirect", shortenValidators.params, redirectShorten);
 
-shortenRouter.get("/:slug/stats", shortenValidators.params, getShortenStats);
+shortenRouter.get(
+  "/:slug/stats",
+  shortenValidators.params,
+  shortenValidators.statsQuery,
+  getShortenStats,
+);
 
 shortenRouter.post("/", maybeAuth, shortenValidators.createBody, createShorten);

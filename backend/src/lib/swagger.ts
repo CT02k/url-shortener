@@ -5,7 +5,6 @@ import {
 
 export const registry = new OpenAPIRegistry();
 
-// Register shared components (e.g. auth) so they are included in generated docs
 registry.registerComponent("securitySchemes", "bearerAuth", {
   type: "http",
   scheme: "bearer",
