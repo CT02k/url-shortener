@@ -1,4 +1,4 @@
-<img width="768" height="432" alt="screenshot" src="https://github.com/user-attachments/assets/2614b869-0777-45f9-8baa-5d3079089482" />
+<img width="768" height="432" alt="screenshot" src="https://github.com/user-attachments/assets/1a45865a-c65b-43cb-8979-6ab822ad618e" />
 
 # URL Shortener
 
