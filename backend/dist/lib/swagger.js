@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateOpenAPIDocument = exports.registry = void 0;
 const zod_to_openapi_1 = require("@asteasolutions/zod-to-openapi");
 exports.registry = new zod_to_openapi_1.OpenAPIRegistry();
-// Register shared components (e.g. auth) so they are included in generated docs
 exports.registry.registerComponent("securitySchemes", "bearerAuth", {
     type: "http",
     scheme: "bearer",
