@@ -51,6 +51,9 @@ export const registerAccountDocs = () => {
       401: {
         description: "Unauthorized",
       },
+      403: {
+        description: "API key does not have the required scope",
+      },
     },
   });
 

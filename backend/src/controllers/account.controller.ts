@@ -35,13 +35,13 @@ export const listMyLinks: RequestHandler = async (req, res, next) => {
       limit: query.limit ? Number(query.limit) : 10,
     };
 
-    const user = req.user;
+    const ownerId = req.user?.id ?? req.apiKey?.userId;
 
-    if (!user) return res.unauthorized();
+    if (!ownerId) return res.unauthorized();
 
     const list = await prisma.shortenedUrl.findMany({
       where: {
-        userId: user.id,
+        userId: ownerId,
       },
       select: {
         slug: true,
@@ -51,10 +51,12 @@ export const listMyLinks: RequestHandler = async (req, res, next) => {
       take: limit,
     });
 
-    const listCount = await prisma.shortenedUrl.count();
+    const listCount = await prisma.shortenedUrl.count({
+      where: { userId: ownerId },
+    });
 
     const total = listCount;
-    const totalPages = Math.floor(listCount / limit);
+    const totalPages = Math.ceil(listCount / limit);
 
     res.status(200).json({ list, page, total, totalPages, limit });
   } catch (err) {

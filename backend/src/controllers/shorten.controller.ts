@@ -254,33 +254,22 @@ export const createShorten: RequestHandler = async (req, res, next) => {
   try {
     const { redirect } = req.body as CreateShortenBody;
 
-    const user = req.user;
+    const ownerId = req.user?.id ?? req.apiKey?.userId;
 
-    if (user) {
-      const userData = await prisma.user.findUnique({
-        where: {
-          id: user.id,
-        },
-      });
+    if (!ownerId) return res.unauthorized();
 
-      if (!userData) return res.unauthorized();
+    const userData = await prisma.user.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
 
-      const data = await prisma.shortenedUrl.create({
-        data: {
-          redirect,
-          userId: userData.id,
-          stats: {
-            create: {},
-          },
-        },
-      });
-
-      return res.json(data);
-    }
+    if (!userData) return res.unauthorized();
 
     const data = await prisma.shortenedUrl.create({
       data: {
         redirect,
+        userId: userData.id,
         stats: {
           create: {},
         },

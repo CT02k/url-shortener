@@ -7,6 +7,9 @@ import {
 import { registerAccountDocs } from "../docs/account.docs";
 import { requireAuth } from "../middlewares/requireAuth";
 import { accountValidators } from "../validators/account.validator";
+import { requireApiAccess } from "../middlewares/requireApiAccess";
+import { apiScope } from "@prisma/client";
+import { maybeAuth } from "../middlewares/maybeAuth";
 
 export const accountRouter = Router();
 
@@ -15,7 +18,8 @@ registerAccountDocs();
 accountRouter.get("/", requireAuth, getProfile);
 accountRouter.get(
   "/links",
-  requireAuth,
+  maybeAuth,
+  requireApiAccess([apiScope.READ_LINKS]),
   accountValidators.linksQuery,
   listMyLinks,
 );

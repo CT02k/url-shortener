@@ -1,12 +1,13 @@
 import crypto from "crypto";
+import { apiScope } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { env } from "./config";
-import { apiScope } from "@prisma/client";
 
 const HMAC_SECRET = env.HMAC_SECRET;
+export const API_KEY_PREFIX = "usk_";
 
 export function generateToken(): string {
-  return crypto.randomBytes(64).toString("base64url");
+  return `${API_KEY_PREFIX}${crypto.randomBytes(64).toString("base64url")}`;
 }
 
 export function hashToken(token: string): string {
@@ -40,6 +41,8 @@ export async function createApiToken(
 }
 
 export async function validateToken(token: string) {
+  if (!token.startsWith(API_KEY_PREFIX)) return null;
+
   const hash = hashToken(token);
 
   const stored = await prisma.apiToken.findUnique({

@@ -1,3 +1,4 @@
+import { apiScope } from "@prisma/client";
 import { Router } from "express";
 import {
   createShorten,
@@ -7,6 +8,7 @@ import {
 } from "../controllers/shorten.controller";
 import { registerShortenDocs } from "../docs/shorten.docs";
 import { maybeAuth } from "../middlewares/maybeAuth";
+import { requireApiAccess } from "../middlewares/requireApiAccess";
 import { shortenValidators } from "../validators/shorten.validator";
 
 export const shortenRouter = Router();
@@ -24,4 +26,10 @@ shortenRouter.get(
   getShortenStats,
 );
 
-shortenRouter.post("/", maybeAuth, shortenValidators.createBody, createShorten);
+shortenRouter.post(
+  "/",
+  maybeAuth,
+  requireApiAccess([apiScope.WRITE_LINKS]),
+  shortenValidators.createBody,
+  createShorten,
+);

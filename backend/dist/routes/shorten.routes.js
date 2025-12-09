@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.shortenRouter = void 0;
+const client_1 = require("@prisma/client");
 const express_1 = require("express");
 const shorten_controller_1 = require("../controllers/shorten.controller");
 const shorten_docs_1 = require("../docs/shorten.docs");
 const maybeAuth_1 = require("../middlewares/maybeAuth");
+const requireApiAccess_1 = require("../middlewares/requireApiAccess");
 const shorten_validator_1 = require("../validators/shorten.validator");
 exports.shortenRouter = (0, express_1.Router)();
 (0, shorten_docs_1.registerShortenDocs)();
 exports.shortenRouter.get("/:slug", shorten_validator_1.shortenValidators.params, shorten_controller_1.getShorten);
 exports.shortenRouter.get("/:slug/redirect", shorten_validator_1.shortenValidators.params, shorten_controller_1.redirectShorten);
 exports.shortenRouter.get("/:slug/stats", shorten_validator_1.shortenValidators.params, shorten_validator_1.shortenValidators.statsQuery, shorten_controller_1.getShortenStats);
-exports.shortenRouter.post("/", maybeAuth_1.maybeAuth, shorten_validator_1.shortenValidators.createBody, shorten_controller_1.createShorten);
+exports.shortenRouter.post("/", maybeAuth_1.maybeAuth, (0, requireApiAccess_1.requireApiAccess)([client_1.apiScope.WRITE_LINKS]), shorten_validator_1.shortenValidators.createBody, shorten_controller_1.createShorten);

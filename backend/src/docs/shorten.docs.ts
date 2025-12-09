@@ -86,6 +86,7 @@ export const registerShortenDocs = () => {
     path: "/shorten",
     summary: "Create a new shortened URL",
     tags: ["Shortener"],
+    security: [{ bearerAuth: [] }],
     request: {
       body: {
         content: {
@@ -106,6 +107,12 @@ export const registerShortenDocs = () => {
       },
       400: {
         description: "Missing or invalid redirect",
+      },
+      401: {
+        description: "Missing or invalid credentials",
+      },
+      403: {
+        description: "API key does not have the required scope",
       },
     },
   });

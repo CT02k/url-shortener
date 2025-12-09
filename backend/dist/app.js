@@ -12,6 +12,7 @@ const ping_routes_1 = require("./routes/ping.routes");
 const shorten_routes_1 = require("./routes/shorten.routes");
 const auth_routes_1 = require("./routes/auth.routes");
 const account_routes_1 = require("./routes/account.routes");
+const api_keys_routes_1 = require("./routes/api-keys.routes");
 const errorHandler_1 = require("./middlewares/errorHandler");
 const responses_1 = require("./middlewares/responses");
 const createApp = () => {
@@ -24,6 +25,7 @@ const createApp = () => {
     });
     app.use("/auth", auth_routes_1.authRouter);
     app.use("/me", account_routes_1.accountRouter);
+    app.use("/api-keys", api_keys_routes_1.apiKeysRouter);
     app.use("/ping", ping_routes_1.pingRouter);
     app.use("/shorten", shorten_routes_1.shortenRouter);
     const swaggerDocument = (0, swagger_1.generateOpenAPIDocument)();
