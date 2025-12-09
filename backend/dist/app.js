@@ -15,11 +15,15 @@ const account_routes_1 = require("./routes/account.routes");
 const api_keys_routes_1 = require("./routes/api-keys.routes");
 const errorHandler_1 = require("./middlewares/errorHandler");
 const responses_1 = require("./middlewares/responses");
+const crons_1 = require("./crons");
+const secretScanning_controller_1 = require("./controllers/secretScanning.controller");
 const createApp = () => {
     const app = (0, express_1.default)();
+    (0, crons_1.registerJobs)();
+    app.use(responses_1.responses);
+    app.post("/github/secret_scanning", express_1.default.text({ type: "application/json" }), secretScanning_controller_1.secretScanning);
     app.use((0, cors_1.default)());
     app.use(express_1.default.json());
-    app.use(responses_1.responses);
     app.get("/health", (_req, res) => {
         res.status(200).json({ status: "ok" });
     });
