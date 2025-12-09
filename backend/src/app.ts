@@ -9,13 +9,24 @@ import { accountRouter } from "./routes/account.routes";
 import { apiKeysRouter } from "./routes/api-keys.routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import { responses } from "./middlewares/responses";
+import { registerJobs } from "./crons";
+import { secretScanning } from "./controllers/secretScanning.controller";
 
 export const createApp = (): Application => {
   const app = express();
 
+  registerJobs();
+
+  app.use(responses);
+
+  app.post(
+    "/github/secret_scanning",
+    express.text({ type: "application/json" }),
+    secretScanning,
+  );
+
   app.use(cors());
   app.use(express.json());
-  app.use(responses);
 
   app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok" });

@@ -4,19 +4,30 @@ import { prisma } from "../lib/prisma";
 import { env } from "./config";
 
 const HMAC_SECRET = env.HMAC_SECRET;
-export const API_KEY_PREFIX = "usk_";
+export const API_KEY_PREFIX = "uskp_";
 
-export const KEY_REGEX =
-  /^usk_([A-Za-z0-9_-]+)_([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/;
+const RANDOM_SEGMENT_LENGTH = 43;
+const CHECKSUM_HEX_LENGTH = 8;
+const UUID_V4_PATTERN =
+  "[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}";
+export const KEY_REGEX_PATTERN = `${API_KEY_PREFIX}[A-Za-z0-9_-]{${RANDOM_SEGMENT_LENGTH}}_[0-9a-f]{${CHECKSUM_HEX_LENGTH}}_${UUID_V4_PATTERN}`;
+export const KEY_REGEX = new RegExp(
+  `^${API_KEY_PREFIX}([A-Za-z0-9_-]{${RANDOM_SEGMENT_LENGTH}})_([0-9a-f]{${CHECKSUM_HEX_LENGTH}})_(${UUID_V4_PATTERN})$`,
+);
+
+const calculateChecksum = (code: string, id: string) =>
+  crypto
+    .createHash("sha256")
+    .update(`${code}_${id}`)
+    .digest("hex")
+    .slice(0, CHECKSUM_HEX_LENGTH);
 
 export function generateTokenParts() {
   const id = crypto.randomUUID();
-  const code = crypto
-    .randomBytes(32)
-    .toString("base64url")
-    .replace(/[^A-Za-z0-9_-]/g, "");
+  const code = crypto.randomBytes(32).toString("base64url");
+  const checksum = calculateChecksum(code, id);
 
-  const token = `${API_KEY_PREFIX}${code}_${id}`;
+  const token = `${API_KEY_PREFIX}${code}_${checksum}_${id}`;
 
   return { token, id };
 }
@@ -53,7 +64,14 @@ export async function createApiToken(
 }
 
 export async function validateToken(token: string) {
-  if (!KEY_REGEX.test(token)) return null;
+  const match = token.match(KEY_REGEX);
+
+  if (!match) return null;
+
+  const [, code, checksum, id] = match;
+  const expectedChecksum = calculateChecksum(code, id);
+
+  if (checksum !== expectedChecksum) return null;
 
   const hash = hashToken(token);
 

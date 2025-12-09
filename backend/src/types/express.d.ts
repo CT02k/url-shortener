@@ -14,6 +14,7 @@ declare global {
     export interface Request {
       user?: AuthUser;
       apiKey?: RequestApiKey;
+      verifyWebhook: () => Promise<boolean>;
     }
     export interface Response {
       unauthorized: () => void;

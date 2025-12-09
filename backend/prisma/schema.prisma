@@ -66,6 +66,7 @@ model user {
   username String @unique
   password String
 
+  alerts        alert[]
   shortenedUrls shortenedUrl[]
   apiTokens     apiToken[]
 }
@@ -76,14 +77,29 @@ enum apiScope {
 }
 
 model apiToken {
-  id         String     @id @default(uuid())
-  name       String
-  hash       String     @unique
-  user       user       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  createdAt  DateTime   @default(now())
+  id        String     @id @default(uuid())
+  name      String
+  hash      String     @unique
+  createdAt DateTime   @default(now())
   // lastUsedAt DateTime?
   // expiresAt  DateTime?
   // revokedAt  DateTime?
-  scopes     apiScope[] @default([])
+  scopes    apiScope[] @default([])
+
+  userId String
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum alertTypes {
+  TOKEN_LEAK
+}
+
+model alert {
+  id      String     @id @default(uuid())
+  title   String
+  content String
+  type    alertTypes
+
+  userId String
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
