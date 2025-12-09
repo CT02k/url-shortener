@@ -12,7 +12,7 @@ export default class DiscordWebhook {
     };
 
     const message = {
-      content: "@here",
+      content: "<@859518290396184597>",
       embeds: [embed],
     };
 

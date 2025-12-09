@@ -6,6 +6,7 @@ import { pingRouter } from "./routes/ping.routes";
 import { shortenRouter } from "./routes/shorten.routes";
 import { authRouter } from "./routes/auth.routes";
 import { accountRouter } from "./routes/account.routes";
+import { apiKeysRouter } from "./routes/api-keys.routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import { responses } from "./middlewares/responses";
 
@@ -21,6 +22,7 @@ export const createApp = (): Application => {
   });
   app.use("/auth", authRouter);
   app.use("/me", accountRouter);
+  app.use("/api-keys", apiKeysRouter);
   app.use("/ping", pingRouter);
 
   app.use("/shorten", shortenRouter);

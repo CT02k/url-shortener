@@ -46,14 +46,14 @@ model shortenedUrlVisitor {
 }
 
 model shortenedUrlClick {
-  id         Int      @id @default(autoincrement())
-  slug       String
-  visitorId  String?
-  referrer   String?
-  userAgent  String?
-  browser    String?
-  country    String?
-  clickedAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  slug      String
+  visitorId String?
+  referrer  String?
+  userAgent String?
+  browser   String?
+  country   String?
+  clickedAt DateTime @default(now())
 
   url shortenedUrl @relation(fields: [slug], references: [slug], onDelete: Cascade)
 
@@ -67,4 +67,23 @@ model user {
   password String
 
   shortenedUrls shortenedUrl[]
+  apiTokens     apiToken[]
+}
+
+enum apiScope {
+  READ_LINKS
+  WRITE_LINKS
+}
+
+model apiToken {
+  id         String     @id @default(uuid())
+  name       String
+  hash       String     @unique
+  user       user       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  createdAt  DateTime   @default(now())
+  // lastUsedAt DateTime?
+  // expiresAt  DateTime?
+  // revokedAt  DateTime?
+  scopes     apiScope[] @default([])
 }
