@@ -6,8 +6,19 @@ import { env } from "./config";
 const HMAC_SECRET = env.HMAC_SECRET;
 export const API_KEY_PREFIX = "usk_";
 
-export function generateToken(): string {
-  return `${API_KEY_PREFIX}${crypto.randomBytes(64).toString("base64url")}`;
+export const KEY_REGEX =
+  /^usk_([A-Za-z0-9_-]+)_([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/;
+
+export function generateTokenParts() {
+  const id = crypto.randomUUID();
+  const code = crypto
+    .randomBytes(32)
+    .toString("base64url")
+    .replace(/[^A-Za-z0-9_-]/g, "");
+
+  const token = `${API_KEY_PREFIX}${code}_${id}`;
+
+  return { token, id };
 }
 
 export function hashToken(token: string): string {
@@ -19,11 +30,12 @@ export async function createApiToken(
   name: string,
   scopes: apiScope[],
 ) {
-  const token = generateToken();
+  const { token, id } = generateTokenParts();
   const hash = hashToken(token);
 
   const created = await prisma.apiToken.create({
     data: {
+      id,
       userId,
       name,
       hash,
@@ -41,7 +53,7 @@ export async function createApiToken(
 }
 
 export async function validateToken(token: string) {
-  if (!token.startsWith(API_KEY_PREFIX)) return null;
+  if (!KEY_REGEX.test(token)) return null;
 
   const hash = hashToken(token);
 
