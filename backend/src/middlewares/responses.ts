@@ -10,13 +10,5 @@ export const responses = (req: Request, res: Response, next: NextFunction) => {
     return res.status(404).json({ message: "Not found" });
   };
 
-  req.verifyWebhook = () => {
-    return verifyWebhook(
-      req.body,
-      req.headers["github-public-key-identifier"]?.toString() ?? "",
-      req.headers["github-public-key-signature"]?.toString() ?? "",
-    );
-  };
-
   next();
 };
