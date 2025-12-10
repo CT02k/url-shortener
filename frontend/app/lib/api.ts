@@ -7,6 +7,8 @@ export interface UrlShortenerOptions {
   onUnauthorized?: () => void | Promise<void>;
 }
 
+export type ApiScope = "READ_LINKS" | "WRITE_LINKS";
+
 export default class UrlShortener {
   token?: string;
   onUnauthorized?: () => void;
@@ -137,6 +139,46 @@ export default class UrlShortener {
   deleteMyLink(slug: string) {
     return this.request({
       path: `/me/links/${slug}`,
+      options: {
+        method: "DELETE",
+      },
+    });
+  }
+
+  listAlerts() {
+    return this.request({
+      path: `/alerts`,
+    });
+  }
+
+  deleteAlert(alertId: string) {
+    return this.request({
+      path: `/alerts/${alertId}`,
+      options: {
+        method: "DELETE",
+      },
+    });
+  }
+
+  listApiKeys() {
+    return this.request({
+      path: `/api-keys`,
+    });
+  }
+
+  createApiKey(data: { name: string; scopes?: ApiScope[] }) {
+    return this.request({
+      path: `/api-keys`,
+      options: {
+        method: "POST",
+        data,
+      },
+    });
+  }
+
+  deleteApiKey(id: string) {
+    return this.request({
+      path: `/api-keys/${id}`,
       options: {
         method: "DELETE",
       },

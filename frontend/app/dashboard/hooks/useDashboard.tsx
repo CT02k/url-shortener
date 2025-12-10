@@ -8,6 +8,8 @@ import {
 } from "react";
 import UrlShortener from "@/app/lib/api";
 import getToken, { clearToken } from "@/app/lib/getToken";
+import AlertPopup from "../components/AlertPopup";
+import { redirect } from "next/navigation";
 
 export type LinkItem = {
   id?: string;
@@ -17,6 +19,7 @@ export type LinkItem = {
 };
 
 type DashboardState = {
+  alerts: any[];
   page: number;
   pages: number;
   total: number;
@@ -31,6 +34,7 @@ type DashboardState = {
   createInput: string;
   setCreateInput: (value: string) => void;
   creating: boolean;
+  handleCloseAlert: (alertId: string) => Promise<void>;
   handleCreate: (ev: FormEvent<HTMLFormElement>) => Promise<void>;
   handleDelete: (slug: string) => Promise<void>;
 };
@@ -50,6 +54,8 @@ function useDashboardState(): DashboardState {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(0);
   const [total, setTotal] = useState(0);
+
+  const [alerts, setAlerts] = useState([]);
 
   const makeApi = (overrideToken?: string) =>
     new UrlShortener({
@@ -77,6 +83,10 @@ function useDashboardState(): DashboardState {
       }
       if (cancelled) return;
       setToken(nextToken);
+
+      const alerts = await makeApi(nextToken).listAlerts();
+
+      setAlerts(alerts);
 
       const data = await makeApi(nextToken).listMyLinks({ page });
       if (cancelled) return;
@@ -138,7 +148,13 @@ function useDashboardState(): DashboardState {
     }
   };
 
+  const handleCloseAlert = async (alertId: string) => {
+    await makeApi().deleteAlert(alertId);
+    redirect("/dashboard/api-keys");
+  };
+
   return {
+    alerts,
     page,
     pages,
     total,
@@ -153,6 +169,7 @@ function useDashboardState(): DashboardState {
     createInput,
     setCreateInput: (value: string) => setCreateInput(value),
     creating,
+    handleCloseAlert,
     handleCreate,
     handleDelete,
   };
@@ -160,9 +177,11 @@ function useDashboardState(): DashboardState {
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const dashboard = useDashboardState();
+
   return (
     <DashboardContext.Provider value={dashboard}>
       {children}
+      {dashboard.alerts.length > 0 && <AlertPopup />}
     </DashboardContext.Provider>
   );
 }
