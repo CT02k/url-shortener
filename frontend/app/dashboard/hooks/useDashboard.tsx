@@ -17,6 +17,12 @@ export type LinkItem = {
 };
 
 type DashboardState = {
+  page: number;
+  pages: number;
+  total: number;
+  setPage: (value: number) => void;
+  nextPage: () => void;
+  previousPage: () => void;
   links: LinkItem[];
   loading: boolean;
   error?: string;
@@ -41,6 +47,10 @@ function useDashboardState(): DashboardState {
   const [createInput, setCreateInput] = useState("");
   const [creating, setCreating] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(0);
+  const [total, setTotal] = useState(0);
+
   const makeApi = (overrideToken?: string) =>
     new UrlShortener({
       token: overrideToken ?? token,
@@ -49,6 +59,9 @@ function useDashboardState(): DashboardState {
         setToken(undefined);
       },
     });
+
+  const nextPage = () => setPage((v) => (v !== pages ? v + 1 : v));
+  const previousPage = () => setPage((v) => (v > 0 ? v - 1 : v));
 
   useEffect(() => {
     let cancelled = false;
@@ -65,7 +78,7 @@ function useDashboardState(): DashboardState {
       if (cancelled) return;
       setToken(nextToken);
 
-      const data = await makeApi(nextToken).listMyLinks();
+      const data = await makeApi(nextToken).listMyLinks({ page });
       if (cancelled) return;
 
       if (!data || data.message) {
@@ -75,12 +88,10 @@ function useDashboardState(): DashboardState {
             : "Failed on loading links.",
         );
       } else {
-        const mapped: LinkItem[] = data.list.map(
-          (item: { slug: string; redirect: string }) => ({
-            slug: item.slug,
-            redirect: item.redirect,
-          }),
-        );
+        const mapped: LinkItem[] = data.list;
+        setPage(data.page);
+        setPages(data.totalPages);
+        setTotal(data.total);
         setLinks(mapped);
       }
       setLoading(false);
@@ -91,7 +102,7 @@ function useDashboardState(): DashboardState {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page]);
 
   const handleCreate = async (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
@@ -128,6 +139,12 @@ function useDashboardState(): DashboardState {
   };
 
   return {
+    page,
+    pages,
+    total,
+    setPage,
+    nextPage,
+    previousPage,
     links,
     loading,
     error,

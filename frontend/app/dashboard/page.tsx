@@ -3,6 +3,8 @@
 import {
   BarChart3,
   Check,
+  ChevronLeft,
+  ChevronRight,
   Copy,
   Loader2,
   Plus,
@@ -27,8 +29,19 @@ export default function DashboardHome() {
 function DashboardContent() {
   const [copied, setCopied] = useState<boolean>(false);
 
-  const { links, loading, error, setCreateOpen, handleDelete } =
-    useDashboardContext();
+  const {
+    links,
+    page,
+    pages,
+    total,
+    loading,
+    error,
+    setCreateOpen,
+    handleDelete,
+    previousPage,
+    nextPage,
+    setPage,
+  } = useDashboardContext();
 
   function handleCopy(url: string) {
     navigator.clipboard.writeText(url);
@@ -140,6 +153,34 @@ function DashboardContent() {
           </tbody>
         </table>
       </div>
+      {pages > 1 && (
+        <div className="w-full flex justify-center gap-4">
+          <button
+            onClick={previousPage}
+            disabled={loading}
+            className="size-10 flex items-center justify-center rounded-lg bg-[#ed9c5a] cursor-pointer hover:opacity-80 transition disabled:opacity-50 disabled:animate-pulse"
+          >
+            <ChevronLeft />
+          </button>
+          {[...Array(pages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setPage(i + 1)}
+              disabled={loading || page === i + 1}
+              className="size-10 flex items-center justify-center rounded-lg bg-[#ed9c5a] cursor-pointer hover:opacity-80 transition disabled:opacity-50 disabled:animate-pulse"
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={nextPage}
+            disabled={loading}
+            className="size-10 flex items-center justify-center rounded-lg bg-[#ed9c5a] cursor-pointer hover:opacity-80 transition disabled:opacity-50 disabled:animate-pulse"
+          >
+            <ChevronRight />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -32,8 +32,6 @@ export function StatsChart({ series }: StatsChartProps) {
     [series.clicks, series.uniques],
   );
 
-  const maxValue = Math.max(...series.clicks, ...series.uniques, 0);
-
   return (
     <div className="relative h-[280px]">
       <ResponsiveContainer width="100%" height="100%">
