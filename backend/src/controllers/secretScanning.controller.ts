@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { GithubRequestBody, verifyWebhook } from "../lib/github";
 import { prisma } from "../lib/prisma";
 import { alertTypes } from "@prisma/client";
+import { hashToken } from "../lib/tokens";
 
 export const secretScanning: RequestHandler = async (req, res, next) => {
   const validate = await verifyWebhook(
@@ -16,7 +17,7 @@ export const secretScanning: RequestHandler = async (req, res, next) => {
     response.forEach(async (data) => {
       const token = await prisma.apiToken.findUnique({
         where: {
-          hash: data.token,
+          hash: hashToken(data.token),
         },
       });
 

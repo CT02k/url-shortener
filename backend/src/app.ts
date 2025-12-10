@@ -11,6 +11,7 @@ import { errorHandler } from "./middlewares/errorHandler";
 import { responses } from "./middlewares/responses";
 import { registerJobs } from "./crons";
 import { secretScanning } from "./controllers/secretScanning.controller";
+import { alertsRouter } from "./routes/alerts.routes";
 
 export const createApp = (): Application => {
   const app = express();
@@ -34,6 +35,7 @@ export const createApp = (): Application => {
   app.use("/auth", authRouter);
   app.use("/me", accountRouter);
   app.use("/api-keys", apiKeysRouter);
+  app.use("/alerts", alertsRouter);
   app.use("/ping", pingRouter);
 
   app.use("/shorten", shortenRouter);
