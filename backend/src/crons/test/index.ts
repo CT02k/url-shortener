@@ -2,7 +2,7 @@ import { env } from "../../lib/config";
 import { Cron, CronFunc } from "../types";
 
 const data: Cron = {
-  name: "API keys leak search",
+  name: "TEST",
   expression: "* */5 * * *",
   condition: !!env.GITHUB_SEARCH_TOKEN,
 };

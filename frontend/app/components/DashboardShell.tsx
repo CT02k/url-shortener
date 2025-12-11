@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Loader2, LogOut, Menu, PanelsTopLeft, X } from "lucide-react";
+import { Code2, Loader2, LogOut, Menu, PanelsTopLeft, X } from "lucide-react";
 import UrlShortener from "../lib/api";
 import getToken, { clearToken } from "../lib/getToken";
 import Image from "next/image";
@@ -20,6 +20,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: "/dashboard", label: "Overview", icon: PanelsTopLeft },
+  { href: "/dashboard/api-keys", label: "API Keys", icon: Code2 },
 ];
 
 function NavLink({ item, active }: { item: NavItem; active: boolean }) {
@@ -28,14 +29,14 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   return (
     <Link
       href={item.href}
-      className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition duration-150 ${
+      className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition ${
         active
           ? "bg-[#ffebda]/10 text-[#ed9c5a]"
           : "text-zinc-400 hover:text-white hover:border-zinc-800 hover:bg-white/5"
       }`}
     >
       <Icon className="size-4" />
-      <span className="font-semibold tracking-tight">{item.label}</span>
+      <span className="font-medium tracking-tight">{item.label}</span>
     </Link>
   );
 }
@@ -141,9 +142,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
               <NavLink
                 key={item.href}
                 item={item}
-                active={
-                  pathname === item.href || pathname.startsWith(`${item.href}/`)
-                }
+                active={pathname === item.href}
               />
             ))}
           </nav>

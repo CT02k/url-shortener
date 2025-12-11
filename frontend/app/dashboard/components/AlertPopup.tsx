@@ -1,5 +1,4 @@
-import { FormEvent } from "react";
-import { Loader2, X } from "lucide-react";
+import { X } from "lucide-react";
 import useDashboardContext from "../hooks/useDashboard";
 import Link from "next/link";
 
@@ -26,15 +25,15 @@ export default function AlertPopup() {
             <br />
             <br />
             Fortunately, we detected the issue in time and removed your token —
-            hopefully before anyone could misuse it! It was found at the
-            following location:{" "}
+            hopefully before anyone could misuse it!
+            <br />
+            Your token was found here:{" "}
             <Link
               href={alert.content}
               className="text-[#ed9c5a] font-medium hover:underline"
             >
-              {" "}
-              {alert.content}{" "}
-            </Link>{" "}
+              {alert.content}
+            </Link>
             <br /> <br /> Please be more cautious moving forward to avoid
             unintentionally uploading your token publicly.
           </p>
