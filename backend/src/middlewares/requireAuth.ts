@@ -1,28 +1,29 @@
-import { AuthUser } from "../types/auth";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../lib/config";
+import { getCredentials } from "../lib/authCredentials";
+import { parseAuthUser } from "../lib/authUser";
 
 export const requireAuth = (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const authorization = req.headers.authorization;
-
-  if (!authorization || !authorization.startsWith("Bearer ")) {
+  const { bearerToken } = getCredentials(req);
+  if (!bearerToken) {
     return res.unauthorized();
   }
 
-  const token = authorization.replace("Bearer ", "");
-
-  if (!token) next();
-
   try {
-    req.user = jwt.verify(token, env.JWT_SECRET) as any as AuthUser;
+    const decoded = jwt.verify(bearerToken, env.JWT_SECRET);
+    const user = parseAuthUser(decoded);
+
+    if (!user) return res.unauthorized();
+
+    req.user = user;
   } catch {
     return res.unauthorized();
   }
 
-  next();
+  return next();
 };

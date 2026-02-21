@@ -10,6 +10,7 @@ import { registerShortenDocs } from "../docs/shorten.docs";
 import { maybeAuth } from "../middlewares/maybeAuth";
 import { requireApiAccess } from "../middlewares/requireApiAccess";
 import { shortenValidators } from "../validators/shorten.validator";
+import { optionalApiAccess } from "../middlewares/optionalApiAccess";
 
 export const shortenRouter = Router();
 
@@ -29,7 +30,7 @@ shortenRouter.get(
 shortenRouter.post(
   "/",
   maybeAuth,
-  requireApiAccess([apiScope.WRITE_LINKS]),
+  optionalApiAccess([apiScope.WRITE_LINKS]),
   shortenValidators.createBody,
   createShorten,
 );
