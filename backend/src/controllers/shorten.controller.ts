@@ -256,11 +256,13 @@ export const createShorten: RequestHandler = async (req, res, next) => {
 
     const ownerId = req.user?.id ?? req.apiKey?.userId;
 
-    const userData = await prisma.user.findUnique({
-      where: {
-        id: ownerId,
-      },
-    });
+    const userData = ownerId
+      ? await prisma.user.findUnique({
+          where: {
+            id: ownerId,
+          },
+        })
+      : null;
 
     const data = await prisma.shortenedUrl.create({
       data: {
