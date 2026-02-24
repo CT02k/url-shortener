@@ -12,6 +12,7 @@ import { responses } from "./middlewares/responses";
 import { registerJobs } from "./crons";
 import { secretScanning } from "./controllers/secretScanning.controller";
 import { alertsRouter } from "./routes/alerts.routes";
+import { registerSystemDocs } from "./docs/system.docs";
 
 export const createApp = (): Application => {
   const app = express();
@@ -40,6 +41,7 @@ export const createApp = (): Application => {
 
   app.use("/shorten", shortenRouter);
 
+  registerSystemDocs();
   const swaggerDocument = generateOpenAPIDocument();
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

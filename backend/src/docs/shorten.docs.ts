@@ -15,6 +15,7 @@ export const registerShortenDocs = () => {
     path: "/shorten/{slug}",
     summary: "Get shorten URL data by slug",
     tags: ["Shortener"],
+    security: [],
     request: {
       params: ShortenParamsSchema,
     },
@@ -38,6 +39,10 @@ export const registerShortenDocs = () => {
     path: "/shorten/{slug}/redirect",
     summary: "Redirect to the final destination",
     tags: ["Shortener"],
+    security: [],
+    request: {
+      params: ShortenParamsSchema,
+    },
     responses: {
       302: {
         description: "Redirects to the target URL",
@@ -62,6 +67,7 @@ export const registerShortenDocs = () => {
     path: "/shorten/{slug}/stats",
     summary: "Get URL stats",
     tags: ["Shortener"],
+    security: [],
     request: {
       params: ShortenParamsSchema,
       query: ShortenStatsQuerySchema,
@@ -86,7 +92,7 @@ export const registerShortenDocs = () => {
     path: "/shorten",
     summary: "Create a new shortened URL",
     tags: ["Shortener"],
-    security: [{ bearerAuth: [] }],
+    security: [{}, { bearerAuth: [] }],
     request: {
       body: {
         content: {

@@ -14,14 +14,18 @@ datasource db {
 }
 
 model shortenedUrl {
-  slug     String @id @default(nanoid(7))
-  redirect String
+  slug      String  @id @default(nanoid(7))
+  redirect  String
 
-  stats    shortenedUrlStats?
-  visitors shortenedUrlVisitor[]
-  clicks   shortenedUrlClick[]
-  user     user?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String?
+  stats     shortenedUrlStats?
+  visitors  shortenedUrlVisitor[]
+  clicks    shortenedUrlClick[]
+  user      user?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?
+
+  password  String?
+  active    Boolean @default(true)
+  expiresAt DateTime?
 }
 
 model shortenedUrlStats {

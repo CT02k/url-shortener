@@ -11,7 +11,6 @@ export const env = {
   NODE_ENV: process.env.NODE_ENV ?? "development",
   PORT: Number(process.env.PORT ?? 3000),
   DISCORD_WEBHOOK_URL: process.env.DISCORD_WEBHOOK_URL,
-  GITHUB_SEARCH_TOKEN: process.env.GITHUB_SEARCH_TOKEN,
   GITHUB_PUBLIC_KEYS_TOKEN: process.env.GITHUB_PUBLIC_KEYS_TOKEN,
   JWT_SECRET: required(process.env.JWT_SECRET, "JWT_SECRET"),
   HMAC_SECRET: required(process.env.HMAC_SECRET, "HMAC_SECRET"),

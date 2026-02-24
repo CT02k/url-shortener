@@ -13,6 +13,7 @@ export const registerAuthDocs = () => {
     path: "/auth/register",
     summary: "Create a new account",
     tags: ["Auth"],
+    security: [],
     request: {
       body: {
         content: {
@@ -45,6 +46,7 @@ export const registerAuthDocs = () => {
     path: "/auth/login",
     summary: "Authenticate and get a token",
     tags: ["Auth"],
+    security: [],
     request: {
       body: {
         content: {

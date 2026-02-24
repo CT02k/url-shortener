@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { RequestHandler } from "express";
+import bcrypt from "bcrypt";
 import getVisitorId from "../lib/hashVisitor";
 import { lookupCountryByIp } from "../lib/ipapi";
 import {
@@ -78,6 +79,8 @@ export const getShorten: RequestHandler = async (req, res, next) => {
       return res.notFound();
     }
 
+    if (data.userId && data.userId !== req.user?.id) return res.unauthorized();
+
     res.json(data);
   } catch (err) {
     next(err);
@@ -94,6 +97,22 @@ export const redirectShorten: RequestHandler = async (req, res, next) => {
 
     if (!data) {
       return res.notFound();
+    }
+
+    if (data.expiresAt && data.expiresAt < new Date()) {
+      if (data.active) {
+        await prisma.shortenedUrl.update({
+          where: { slug },
+          data: { active: false },
+        });
+      }
+      return res.status(410).json({ message: "This link has expired." });
+    }
+
+    if (!data.active) {
+      return res
+        .status(410)
+        .json({ message: "This link is no longer active." });
     }
 
     const ip = getClientIp(req);
@@ -252,7 +271,7 @@ export const getShortenStats: RequestHandler = async (req, res, next) => {
 
 export const createShorten: RequestHandler = async (req, res, next) => {
   try {
-    const { redirect } = req.body as CreateShortenBody;
+    const { redirect, expiresAt, password } = req.body as CreateShortenBody;
 
     const ownerId = req.user?.id ?? req.apiKey?.userId;
 
@@ -264,9 +283,13 @@ export const createShorten: RequestHandler = async (req, res, next) => {
         })
       : null;
 
+    const passwordHash = password ? await bcrypt.hash(password, 10) : null;
+
     const data = await prisma.shortenedUrl.create({
       data: {
         redirect,
+        expiresAt,
+        password: passwordHash,
         userId: userData ? userData.id : undefined,
         stats: {
           create: {},

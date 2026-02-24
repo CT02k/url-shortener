@@ -16,6 +16,7 @@ export const registerPingDocs = () => {
     description:
       "Returns the current API latency in milliseconds. Useful for monitoring and performance diagnostics.",
     tags: ["System"],
+    security: [],
     responses: {
       200: {
         description: "Current API latency",
