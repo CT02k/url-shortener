@@ -25,6 +25,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/url_shortener}
     container_name: url-shortener-backend
     restart: unless-stopped
     depends_on:
@@ -47,6 +49,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/url_shortener}
     container_name: url-shortener-worker
     restart: unless-stopped
     depends_on:
