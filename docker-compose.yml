@@ -7,8 +7,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-url_shortener}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -16,8 +14,6 @@ services:
     image: redis:7-alpine
     container_name: url-shortener-redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
 
@@ -42,8 +38,8 @@ services:
       BULLMQ_ANALYTICS_QUEUE: ${BULLMQ_ANALYTICS_QUEUE:-analytics}
       BULLMQ_PREFIX: ${BULLMQ_PREFIX:-bullmq}
     command: sh -c "npx prisma db push && npm run start"
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
 
   worker:
     build:
@@ -81,8 +77,8 @@ services:
       NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
       NEXT_PUBLIC_FRONTEND_URL: ${NEXT_PUBLIC_FRONTEND_URL}
       BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL:-http://backend:3000}
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
 
 volumes:
   postgres_data:
