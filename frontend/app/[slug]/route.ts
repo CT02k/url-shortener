@@ -31,10 +31,11 @@ export async function GET(
 
   const redirect = new URL(
     `/shorten/${slug}/redirect`,
-    env.NEXT_PUBLIC_BACKEND_URL,
+    env.BACKEND_INTERNAL_URL,
   );
 
   redirect.searchParams.set("ref", ref);
 
   return NextResponse.redirect(redirect);
 }
+

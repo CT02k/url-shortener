@@ -1,0 +1,20 @@
+FROM node:22-bookworm-slim
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_FRONTEND_URL
+
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_FRONTEND_URL=$NEXT_PUBLIC_FRONTEND_URL
+
+RUN npm run build
+
+EXPOSE 3001
+
+CMD ["npm", "run", "start", "--", "-H", "0.0.0.0", "-p", "3001"]

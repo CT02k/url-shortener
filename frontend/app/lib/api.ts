@@ -38,7 +38,7 @@ export default class UrlShortener {
       headers.Authorization = `Bearer ${this.token}`;
     }
 
-    const url = new URL(path, env.NEXT_PUBLIC_BACKEND_URL).toString();
+    const url = new URL(path, env.BACKEND_INTERNAL_URL).toString();
 
     console.log("Request to " + url);
 
