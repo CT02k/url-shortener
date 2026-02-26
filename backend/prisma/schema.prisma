@@ -14,7 +14,7 @@ datasource db {
 }
 
 model shortenedUrl {
-  slug      String  @id @default(nanoid(7))
+  slug      String  @id
   redirect  String
 
   stats     shortenedUrlStats?
@@ -23,7 +23,6 @@ model shortenedUrl {
   user      user?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String?
 
-  password  String?
   active    Boolean @default(true)
   expiresAt DateTime?
 }

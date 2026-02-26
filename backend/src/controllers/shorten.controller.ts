@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 import bcrypt from "bcrypt";
 import { getClientIp } from "../lib/requestInfo";
 import { prisma } from "../lib/prisma";
+import { generateSlug } from "../lib/generateSlug";
 import {
   CreateShortenBody,
   ShortenParams,
@@ -255,17 +256,38 @@ export const createShorten: RequestHandler = async (req, res, next) => {
 
     const passwordHash = password ? await bcrypt.hash(password, 10) : null;
 
-    const data = await prisma.shortenedUrl.create({
-      data: {
-        redirect,
-        expiresAt,
-        password: passwordHash,
-        userId: userData ? userData.id : undefined,
-        stats: {
-          create: {},
-        },
-      },
-    });
+    let data = null;
+
+    for (let i = 0; i < 5; i++) {
+      try {
+        data = await prisma.shortenedUrl.create({
+          data: {
+            slug: generateSlug(),
+            redirect,
+            expiresAt,
+            password: passwordHash,
+            userId: userData ? userData.id : undefined,
+            stats: {
+              create: {},
+            },
+          },
+        });
+        break;
+      } catch (err) {
+        if (
+          err instanceof Prisma.PrismaClientKnownRequestError &&
+          err.code === "P2002"
+        ) {
+          continue;
+        }
+        throw err;
+      }
+    }
+
+    if (!data)
+      throw new Error(
+        "Failed to generate a unique slug after multiple attempts.",
+      );
 
     res.json(data);
   } catch (err) {
