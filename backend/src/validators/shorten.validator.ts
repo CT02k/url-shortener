@@ -60,7 +60,6 @@ export const ShortenStatsQuerySchema = z.object({
 export const CreateShortenBodySchema = z.object({
   redirect: z.string().url(),
   expiresAt: z.coerce.date().optional(),
-  password: z.string().optional(),
 });
 
 export const ShortenParamsSchema = z.object({
