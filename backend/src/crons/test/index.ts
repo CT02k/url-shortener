@@ -4,7 +4,7 @@ import { Cron, CronFunc } from "../types";
 const data: Cron = {
   name: "TEST",
   expression: "* */5 * * *",
-  condition: !!env.GITHUB_SEARCH_TOKEN,
+  condition: false,
 };
 
 const execute: CronFunc = async () => {

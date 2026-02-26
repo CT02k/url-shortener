@@ -1,20 +1,15 @@
 import { Prisma } from "@prisma/client";
 import { RequestHandler } from "express";
 import bcrypt from "bcrypt";
-import getVisitorId from "../lib/hashVisitor";
-import { lookupCountryByIp } from "../lib/ipapi";
-import {
-  getBrowserFromUserAgent,
-  getClientIp,
-  getReferrer,
-  getUserAgent,
-} from "../lib/requestInfo";
+import { getClientIp } from "../lib/requestInfo";
 import { prisma } from "../lib/prisma";
 import {
   CreateShortenBody,
   ShortenParams,
   ShortenStatsQuery,
 } from "../validators/shorten.validator";
+import { analyticsQueue } from "../lib/queue";
+import { AnalyticsQueuePayload } from "../types/queue";
 
 type TimeRange = ShortenStatsQuery["range"];
 type ClickWhere = Prisma.shortenedUrlClickWhereInput;
@@ -115,55 +110,30 @@ export const redirectShorten: RequestHandler = async (req, res, next) => {
         .json({ message: "This link is no longer active." });
     }
 
-    const ip = getClientIp(req);
-    const userAgent = getUserAgent(req);
-    const referrer = getReferrer(req);
-    const browser = getBrowserFromUserAgent(userAgent);
+    res.redirect(data.redirect);
 
-    await prisma.shortenedUrlStats.upsert({
-      where: { slug },
-      create: {
+    const userAgent = req.get("user-agent") ?? "";
+    const xForwardedFor = req.get("x-forwarded-for");
+    const referrer =
+      req.get("referer") ?? req.query.ref?.toString() ?? "unknown";
+
+    await analyticsQueue.add(
+      "trackClick",
+      {
+        referrer,
+        ip: getClientIp(req.ip, xForwardedFor) ?? "",
+        xForwardedFor,
+        userAgent,
         slug,
-        clicks: 1,
-        uniqueClicks: 0,
-        lastClickAt: new Date(),
-      },
-      update: {
-        clicks: { increment: 1 },
-        lastClickAt: new Date(),
-      },
-    });
-
-    const visitorId = await getVisitorId(req);
-    const location = await lookupCountryByIp(ip);
-    const country = location?.country ?? null;
-
-    try {
-      await prisma.shortenedUrlVisitor.create({
-        data: { slug, visitorId },
-      });
-
-      await prisma.shortenedUrlStats.update({
-        where: { slug },
-        data: { uniqueClicks: { increment: 1 } },
-      });
-    } catch {}
-
-    try {
-      await prisma.shortenedUrlClick.create({
-        data: {
-          slug,
-          visitorId,
-          referrer,
-          userAgent,
-          browser,
-          country,
-          clickedAt: new Date(),
+      } as AnalyticsQueuePayload,
+      {
+        attempts: 3,
+        backoff: {
+          type: "exponential",
+          delay: 1000,
         },
-      });
-    } catch (err) {}
-
-    return res.redirect(data.redirect);
+      },
+    );
   } catch (err) {
     next(err);
   }

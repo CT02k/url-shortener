@@ -5,7 +5,7 @@
 Small fullstack URL shortener: Express + Prisma (PostgreSQL) backend and Next.js frontend to create short links, track clicks, and handle auth/account.
 
 ## How to run
-- **Backend**
+- **Backend & Worker**
   1. `cd backend && npm install`
   2. Create `.env` with `DATABASE_URL`, `JWT_SECRET`, `PORT=3000`, and optional `DISCORD_WEBHOOK_URL` for error alerts.
   3. `npm run prisma:migrate` then `npm run dev`.

@@ -2,7 +2,7 @@ import axios from "axios";
 import { env } from "./config";
 
 export default class DiscordWebhook {
-  public sendAlert(error: any) {
+  public async sendAlert(error: unknown): Promise<void> {
     if (!env.DISCORD_WEBHOOK_URL) return;
 
     const embed = {
@@ -16,6 +16,10 @@ export default class DiscordWebhook {
       embeds: [embed],
     };
 
-    axios.post(env.DISCORD_WEBHOOK_URL, message);
+    try {
+      await axios.post(env.DISCORD_WEBHOOK_URL, message, { timeout: 5000 });
+    } catch (err) {
+      console.error("Discord webhook failed:", err);
+    }
   }
 }
