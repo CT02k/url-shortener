@@ -48,7 +48,10 @@ export default function Home() {
     setCreating(false);
 
     if (slug) {
-      const url = new URL(slug, env.NEXT_PUBLIC_FRONTEND_URL).toString();
+      const url = new URL(
+        `/r/${slug}`,
+        env.NEXT_PUBLIC_FRONTEND_URL,
+      ).toString();
       setResult(url);
       return;
     }
