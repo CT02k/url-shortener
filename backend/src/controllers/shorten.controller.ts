@@ -242,7 +242,7 @@ export const getShortenStats: RequestHandler = async (req, res, next) => {
 
 export const createShorten: RequestHandler = async (req, res, next) => {
   try {
-    const { redirect, expiresAt, password } = req.body as CreateShortenBody;
+    const { redirect, expiresAt } = req.body as CreateShortenBody;
 
     const ownerId = req.user?.id ?? req.apiKey?.userId;
 
