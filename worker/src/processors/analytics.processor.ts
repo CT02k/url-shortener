@@ -1,8 +1,8 @@
 import { Job } from "bullmq";
-import getVisitorId from "../../lib/hashVisitor";
-import { lookupCountryByIp } from "../../lib/ipapi";
-import { getClientIp, getBrowserFromUserAgent } from "../../lib/requestInfo";
-import { AnalyticsQueuePayload } from "../../types/queue";
+import getVisitorId from "../lib/hashVisitor";
+import { lookupCountryByIp } from "../lib/ipapi";
+import { getClientIp, getBrowserFromUserAgent } from "../lib/requestInfo";
+import { AnalyticsQueuePayload } from "../types/queue";
 import { trackAnalytics } from "../services/analytics.service";
 
 export const analyticsProcessor = async (job: Job<AnalyticsQueuePayload>) => {

@@ -1,8 +1,8 @@
 import { Worker } from "bullmq";
 
-import { env } from "../lib/config";
-import { redis } from "../lib/redis";
-import DiscordWebhook from "../lib/discord";
+import { env } from "./lib/config";
+import { redis } from "./lib/redis";
+import DiscordWebhook from "./lib/discord";
 
 import { analyticsProcessor } from "./processors/analytics.processor";
 

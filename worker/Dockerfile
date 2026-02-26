@@ -17,6 +17,4 @@ ENV DATABASE_URL=$DATABASE_URL
 RUN npx prisma generate
 RUN npx tsc
 
-EXPOSE 3000
-
 CMD ["npm", "run", "start"]

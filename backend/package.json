@@ -4,12 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:worker\"",
+    "dev": "npm run dev:server",
     "dev:server": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "dev:worker": "ts-node-dev --respawn --transpile-only src/worker-src/worker.ts",
     "build": "npm install && prisma generate && tsc",
     "start": "node dist/server.js",
-    "start:worker": "node dist/worker-src/worker.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
   },
@@ -40,7 +38,6 @@
     "@types/node": "^24.10.1",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
-    "concurrently": "^9.2.1",
     "prettier": "^3.7.4",
     "prisma": "^6.19.0",
     "ts-node-dev": "^2.0.0",

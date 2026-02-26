@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model shortenedUrl {
+  slug      String  @id
+  redirect  String
+
+  stats     shortenedUrlStats?
+  visitors  shortenedUrlVisitor[]
+  clicks    shortenedUrlClick[]
+  user      user?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?
+
+  active    Boolean @default(true)
+  expiresAt DateTime?
+}
+
+model shortenedUrlStats {
+  id           Int       @id @default(autoincrement())
+  slug         String    @unique
+  clicks       Int       @default(0)
+  uniqueClicks Int       @default(0)
+  lastClickAt  DateTime?
+
+  url shortenedUrl @relation(fields: [slug], references: [slug], onDelete: Cascade)
+}
+
+model shortenedUrlVisitor {
+  id          Int      @id @default(autoincrement())
+  slug        String
+  visitorId   String
+  firstSeenAt DateTime @default(now())
+
+  url shortenedUrl @relation(fields: [slug], references: [slug], onDelete: Cascade)
+
+  @@unique([slug, visitorId])
+}
+
+model shortenedUrlClick {
+  id        Int      @id @default(autoincrement())
+  slug      String
+  visitorId String?
+  referrer  String?
+  userAgent String?
+  browser   String?
+  country   String?
+  clickedAt DateTime @default(now())
+
+  url shortenedUrl @relation(fields: [slug], references: [slug], onDelete: Cascade)
+
+  @@index([slug, clickedAt])
+  @@index([slug, visitorId])
+}
+
+model user {
+  id       String @id @default(uuid())
+  username String @unique
+  password String
+
+  alerts        alert[]
+  shortenedUrls shortenedUrl[]
+  apiTokens     apiToken[]
+}
+
+enum apiScope {
+  READ_LINKS
+  WRITE_LINKS
+}
+
+model apiToken {
+  id        String     @id @default(uuid())
+  name      String
+  hash      String     @unique
+  createdAt DateTime   @default(now())
+  // lastUsedAt DateTime?
+  // expiresAt  DateTime?
+  // revokedAt  DateTime?
+  scopes    apiScope[] @default([])
+
+  userId String
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum alertTypes {
+  TOKEN_LEAK
+}
+
+model alert {
+  id      String     @id @default(uuid())
+  title   String
+  content String
+  type    alertTypes
+
+  userId String
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
