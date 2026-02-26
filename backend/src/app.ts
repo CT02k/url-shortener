@@ -19,6 +19,8 @@ export const createApp = (): Application => {
 
   registerJobs();
 
+  app.set("trust proxy", true);
+
   app.use(responses);
 
   app.post(
@@ -31,7 +33,7 @@ export const createApp = (): Application => {
   app.use(express.json());
 
   app.get("/health", (_req, res) => {
-    res.status(200).json({ status: "ok" });
+    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
   });
   app.use("/auth", authRouter);
   app.use("/me", accountRouter);

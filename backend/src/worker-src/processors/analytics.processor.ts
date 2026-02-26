@@ -9,7 +9,7 @@ export const analyticsProcessor = async (job: Job<AnalyticsQueuePayload>) => {
   const payload = job.data;
 
   const ip = getClientIp(payload.ip, payload.xForwardedFor);
-  const visitorId = getVisitorId(payload.ip, payload.userAgent);
+  const visitorId = getVisitorId(ip, payload.userAgent);
   const browser = getBrowserFromUserAgent(payload.userAgent);
   const country = (await lookupCountryByIp(ip))?.country ?? null;
 
