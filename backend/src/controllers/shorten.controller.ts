@@ -254,8 +254,6 @@ export const createShorten: RequestHandler = async (req, res, next) => {
         })
       : null;
 
-    const passwordHash = password ? await bcrypt.hash(password, 10) : null;
-
     let data = null;
 
     for (let i = 0; i < 5; i++) {
@@ -265,7 +263,6 @@ export const createShorten: RequestHandler = async (req, res, next) => {
             slug: generateSlug(),
             redirect,
             expiresAt,
-            password: passwordHash,
             userId: userData ? userData.id : undefined,
             stats: {
               create: {},
