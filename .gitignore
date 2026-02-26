@@ -1,1 +1,3 @@
 load-tests/
+.env
+**/.env

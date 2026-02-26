@@ -5,9 +5,10 @@
 Small fullstack URL shortener: Express + Prisma (PostgreSQL) backend and Next.js frontend to create short links, track clicks, and handle auth/account.
 
 ## Run with Docker
-1. From repo root, run: `docker compose up --build`
-2. Open frontend at `http://localhost:3001`
-3. API docs are at `http://localhost:3000/docs`
+1. From repo root, create `.env` based on `.env.example`.
+2. Run: `docker compose up --build`
+3. Open frontend at `http://localhost:3001`
+4. API docs are at `http://localhost:3000/docs`
 
 Services started by Compose:
 - `frontend` (Next.js)

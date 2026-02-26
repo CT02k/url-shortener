@@ -1,14 +1,12 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:16-alpine
     container_name: url-shortener-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: url_shortener
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-url_shortener}
     ports:
       - "5432:5432"
     volumes:
@@ -33,14 +31,14 @@ services:
       - postgres
       - redis
     environment:
-      NODE_ENV: production
-      PORT: 3000
-      JWT_SECRET: change_me
-      HMAC_SECRET: change_me
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/url_shortener
-      REDIS_URL: redis://redis:6379
-      BULLMQ_ANALYTICS_QUEUE: analytics
-      BULLMQ_PREFIX: bullmq
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3000}
+      JWT_SECRET: ${JWT_SECRET}
+      HMAC_SECRET: ${HMAC_SECRET}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/url_shortener}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      BULLMQ_ANALYTICS_QUEUE: ${BULLMQ_ANALYTICS_QUEUE:-analytics}
+      BULLMQ_PREFIX: ${BULLMQ_PREFIX:-bullmq}
     command: sh -c "npx prisma db push && npm run start"
     ports:
       - "3000:3000"
@@ -55,13 +53,13 @@ services:
       - postgres
       - redis
     environment:
-      NODE_ENV: production
-      JWT_SECRET: change_me
-      HMAC_SECRET: change_me
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/url_shortener
-      REDIS_URL: redis://redis:6379
-      BULLMQ_ANALYTICS_QUEUE: analytics
-      BULLMQ_PREFIX: bullmq
+      NODE_ENV: ${NODE_ENV:-production}
+      JWT_SECRET: ${JWT_SECRET}
+      HMAC_SECRET: ${HMAC_SECRET}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/url_shortener}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      BULLMQ_ANALYTICS_QUEUE: ${BULLMQ_ANALYTICS_QUEUE:-analytics}
+      BULLMQ_PREFIX: ${BULLMQ_PREFIX:-bullmq}
     command: sh -c "npx prisma db push && npm run start:worker"
 
   frontend:
@@ -69,16 +67,16 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_BACKEND_URL: http://localhost:3000
-        NEXT_PUBLIC_FRONTEND_URL: http://localhost:3001
+        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
+        NEXT_PUBLIC_FRONTEND_URL: ${NEXT_PUBLIC_FRONTEND_URL}
     container_name: url-shortener-frontend
     restart: unless-stopped
     depends_on:
       - backend
     environment:
-      NEXT_PUBLIC_BACKEND_URL: http://localhost:3000
-      NEXT_PUBLIC_FRONTEND_URL: http://localhost:3001
-      BACKEND_INTERNAL_URL: http://backend:3000
+      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
+      NEXT_PUBLIC_FRONTEND_URL: ${NEXT_PUBLIC_FRONTEND_URL}
+      BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL:-http://backend:3000}
     ports:
       - "3001:3001"
 
